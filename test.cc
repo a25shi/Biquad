@@ -1,4 +1,5 @@
 #include "board.h"
+
 using namespace std;
 
 ostream& operator<<( ostream & out, Board &b) {
@@ -8,6 +9,7 @@ ostream& operator<<( ostream & out, Board &b) {
             if (x != 0) {
                 out << " ";
             }
+            //cout << "here?" << endl;
             out << b.getVal(x, y);
         }
         out << endl;
@@ -16,38 +18,29 @@ ostream& operator<<( ostream & out, Board &b) {
     return out;
 }
 
-int main(int argc, char *argv[]) {
+int main(int args, char *argv[]) {
     Board b;
     cout << b << endl;
-    if (argc == 2) {
-        string newBlock = string(1, argv[1][0]);
-        b.next(newBlock);
-    } else {
-        b.next("L");
-    }
+    b.next("L");
     cout << b << endl;
-    string cmd;
+    char cmd;
     while (cin >> cmd) {
-        if (cmd == "move") {
-            char dir;
-            cin >> dir;
-            if (dir == 'r') {
+        switch (cmd) {
+            case 'r': {
                 b.move("r");
                 cout << b << endl;
-            } else if (dir == 'l') {
+                break;
+            }
+            case 'l': {
                 b.move("l");
                 cout << b << endl;
-            } else if (dir == 'd') {
+                break;
+            }
+            case 'd': {
                 b.move("d");
                 cout << b << endl;
-            } else {
-                cout << "Invalid Direction!" << endl;
+                break;
             }
-        } else if (cmd == "drop") {
-            b.drop();
-            cout << b << endl;
-        } else {
-            cout << "Invalid Argument!" << endl;
         }
     }
 }

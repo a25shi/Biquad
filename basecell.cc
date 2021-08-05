@@ -11,10 +11,6 @@ bool Basecell::isTemp() const {
     return temp;
 }
 
-void Basecell::setTemp(bool state) {
-    temp = state;
-}
-
 vector<vector<int>> Basecell::getCoord() const {
     vector<vector<int>> nothing;
     return nothing;
