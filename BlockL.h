@@ -9,10 +9,6 @@
 #include "block.h"
 
 class BlockL : public block {
-    vector<vector<int>> off;
-    bool isRandom = false;
-    string colour;
-    int level = 1;
 
 public:
     virtual bool drop();

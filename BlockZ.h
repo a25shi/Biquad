@@ -7,10 +7,6 @@
 #include "block.h"
 
 class BlockZ : public block {
-    vector<vector<int>> off;
-    bool isRandom = false;
-    string colour;
-    int level = 1;
 
 public:
     virtual bool drop();

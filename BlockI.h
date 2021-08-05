@@ -5,12 +5,8 @@
 #include "block.h"
 
 class BlockI : public block {
-    vector<vector<int>> off;
-    bool isRandom = false;
-    string colour;
-    int level = 1;
-
 public:
+    BlockI();
     virtual bool drop();
     virtual bool rotateClockwise();
     virtual bool rotateCounter();

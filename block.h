@@ -9,7 +9,7 @@ class block {
     bool isRandom = false;
     string colour;
     int level = 1;
-
+    char type;
 public:
     virtual bool drop() = 0;
     virtual bool rotateClockwise() = 0;
