@@ -4,6 +4,8 @@
 #include "block.h"
 
 class board {
+    const int rows = 18;
+    const int cols = 11;
     bool textOutput = true;
     bool isRandom;
     bool isBlind;
