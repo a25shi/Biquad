@@ -1,3 +1,4 @@
+#include <iomanip>
 #include "board.h"
 #include "level0.h"
 #include "level1.h"
@@ -6,23 +7,35 @@
 #include "level4.h"
 using namespace std;
 
-void blockGen(Board &b, generation* l) {
+void blockGen(Board &b, generation* l, bool call) {
     char block = l->genBlock();
     string s (1, block);
-    b.next(s);
+    if (call) {
+        b.next();
+    }
+    b.setNext(s);
 }
 
 ostream& operator<<( ostream & out, Board &b) {
-    cout << string(21, '-') << endl;
+    out << "Level:";
+    out << right;
+    out << setw(5) << b.getLevel() << endl;
+
+    out << "Score:";
+    out << right;
+    out << setw(5) << b.getScore() << endl;
+
+    out << string(11, '-') << endl;
     for (int y = 17; y >= 0; y--) {
         for (int x = 0; x < 11; x++) {
-            if (x != 0) {
-                out << " ";
-            }
             out << b.getVal(x, y);
         }
         out << endl;
     }
+    out << string(11, '-') << endl;
+
+    out << "Next:" << endl;
+    out << "Type is: " << b.getNext() << endl;
 
     return out;
 }
@@ -30,8 +43,8 @@ ostream& operator<<( ostream & out, Board &b) {
 int main(int argc, char *argv[]) {
     Board b;
     level1 l;
-    cout << b << endl;
-    blockGen(b, &l);
+    blockGen(b, &l, false);
+    blockGen(b, &l, true);
     cout << b << endl;
     string cmd;
     while (cin >> cmd) {
@@ -52,7 +65,7 @@ int main(int argc, char *argv[]) {
             }
         } else if (cmd == "drop") {
             b.drop();
-            blockGen(b, &l);
+            blockGen(b, &l, true);
             cout << b << endl;
         } else {
             cout << "Invalid Argument!" << endl;

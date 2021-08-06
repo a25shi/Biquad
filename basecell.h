@@ -14,6 +14,9 @@ class Basecell : public Cell {
         void setTemp(bool state) override;
         vector<vector<int>> getCoord() const override;
         void changeCoord(int diff, string axis) override;
+        void removeCoord(int x, int y) override;
+        int getActiveCoord() const override;
+        int getLevel() const override;
 };
 
 #endif

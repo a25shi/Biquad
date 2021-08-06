@@ -17,11 +17,13 @@ using namespace std;
 class Board {
     const int rows = 18;
     const int cols = 11;
+    int score = 0;
     bool textOutput = true;
     bool isRandom;
     bool isBlind;
     bool isHeavy;
-    int curLevel;
+    int curLevel = 0;
+    string nextBlock;
 
     vector< vector<Cell*> > grid;
     vector<vector<int>> curr;
@@ -29,7 +31,6 @@ class Board {
     vector<int> rowsFull();
     bool checkSpecial(int rows);
     void removeRow(int rowNum);
-    void updateScore(int addPoints);
     void wipeTemp();
     void reset();
 
@@ -37,9 +38,14 @@ public:
     Board();
     ~Board();
     string getVal(int x, int y);
-    void next(string type);
+    void next();
     bool move(string dir);
     void drop();
+    int getScore();
+    int getLevel();
+    void setNext(string type);
+    string getNext();
+
 };
 
 #endif //BIQUAD_BOARD_H

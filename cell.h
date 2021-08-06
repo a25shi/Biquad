@@ -12,6 +12,9 @@ class Cell {
         virtual void setTemp(bool state) = 0;
         virtual vector<vector<int>> getCoord() const = 0;
         virtual void changeCoord(int diff, string axis) = 0;
+        virtual void removeCoord(int x, int y) = 0;
+        virtual int getActiveCoord() const = 0;
+        virtual int getLevel() const = 0;
         virtual ~Cell();
 };
 
