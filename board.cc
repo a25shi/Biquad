@@ -1,6 +1,8 @@
 #include "board.h"
 using namespace std;
-
+void Board::setLevel(int level) {
+    curLevel = level;
+}
 Board::Board() {
     for (int y = 0; y < rows; y++) {
         vector<Cell*> cell;

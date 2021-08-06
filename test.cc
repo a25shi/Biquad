@@ -1,22 +1,19 @@
 #include <iomanip>
 #include "board.h"
-#include "level0.h"
-#include "level1.h"
-#include "level2.h"
-#include "level3.h"
-#include "level4.h"
+#include "RAIILevel.h"
+
 using namespace std;
 
-void blockGen(Board &b, generation* l, bool call) {
+void blockGen(Board &b, generation *l, bool call) {
     char block = l->genBlock();
-    string s (1, block);
+    string s(1, block);
     if (call) {
         b.next();
     }
     b.setNext(s);
 }
 
-ostream& operator<<( ostream & out, Board &b) {
+ostream &operator<<(ostream &out, Board &b) {
     out << "Level:";
     out << right;
     out << setw(5) << b.getLevel() << endl;
@@ -42,9 +39,11 @@ ostream& operator<<( ostream & out, Board &b) {
 
 int main(int argc, char *argv[]) {
     Board b;
-    level1 l;
-    blockGen(b, &l, false);
-    blockGen(b, &l, true);
+    RAIILevel levelvector{"sequence1.txt"};
+    shared_ptr<generation> l = levelvector.getLevel(3);
+    b.setLevel(3);
+    blockGen(b, l.get(), false);
+    blockGen(b, l.get(), true);
     cout << b << endl;
     string cmd;
     while (cin >> cmd) {
@@ -65,8 +64,19 @@ int main(int argc, char *argv[]) {
             }
         } else if (cmd == "drop") {
             b.drop();
-            blockGen(b, &l, true);
+            blockGen(b, l.get(), true);
             cout << b << endl;
+        } else if (cmd == "level") {
+            int level;
+            cin >> level;
+            try {
+                l = levelvector.getLevel(level);
+                b.setLevel(level);
+                cout << b << endl;
+            }
+            catch (error) {
+                cerr << "Error: Level not in bounds." << endl;
+            }
         } else {
             cout << "Invalid Argument!" << endl;
         }
