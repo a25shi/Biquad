@@ -1,16 +1,14 @@
 #include "blockL.h"
-#include "cell.h"
 #include <iostream>
 
 using namespace std;
 
-BlockL::BlockL(Cell *component, vector<vector<int>> coord) : Decorator{component}, 
+BlockL::BlockL(Cell *component, vector<vector<int>> coord) : Decorator{component},
                                                                type{"L"},
                                                                temp{true},
                                                                coord{ coord } {}
 
 string BlockL::getType() const {
-    //cout << "here too?" << endl;
     return type;
 }
 

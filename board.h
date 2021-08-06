@@ -6,7 +6,7 @@
 #include "cell.h"
 #include "basecell.h"
 #include "blockL.h"
-
+#include "blockO.h"
 using namespace std;
 
 class Board {

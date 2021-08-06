@@ -8,7 +8,6 @@ Board::Board() {
         for (int x = 0; x < cols; x++) {
             grid[y].emplace_back(new Basecell{});
         }
-
     }
 }
 
@@ -36,6 +35,7 @@ bool Board::wipeTemp() {
 }
 
 bool Board::move(string dir) {
+    string type;
     bool success = false;
     bool cont = true;
     vector<vector<int>> newCoord;
@@ -43,6 +43,7 @@ bool Board::move(string dir) {
         if (cont) {
             for (int x = 0; x < cols - 1; x++) {
                 if (grid[y][x]->isTemp()) {
+                    type = grid[y][x]->getType();
                     if (dir == "r") {
                         grid[y][x]->changeCoord(1, "x");
                     } else if (dir == "l") {
@@ -57,13 +58,17 @@ bool Board::move(string dir) {
             }
         }
     }
-
     success = wipeTemp();
     for (int i = 0; i < 4; i++) {
-        grid[newCoord[i][1]][newCoord[i][0]] = new BlockL(grid[newCoord[i][1]][newCoord[i][0]], newCoord);
-        grid[newCoord[i][1]][newCoord[i][0]] = new BlockL(grid[newCoord[i][1]][newCoord[i][0]], newCoord);
+        if (type == "L") {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockL(grid[newCoord[i][1]][newCoord[i][0]], newCoord);
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockL(grid[newCoord[i][1]][newCoord[i][0]], newCoord);
+        }
+        else if (type == "O") {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockO(grid[newCoord[i][1]][newCoord[i][0]], newCoord);
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockO(grid[newCoord[i][1]][newCoord[i][0]], newCoord);
+        }
     }
-
     return success;
 }
 
@@ -75,18 +80,23 @@ void Board::next(string type) {
     }
 
     if (type == "L") {
-        coord[0].emplace_back(0);
-        coord[0].emplace_back(17);
-        coord[1].emplace_back(0);
-        coord[1].emplace_back(16);
-        coord[2].emplace_back(0);
-        coord[2].emplace_back(15);
-        coord[3].emplace_back(1);
-        coord[3].emplace_back(15);
+        coord[0] = {0, 17};
+        coord[1] = {0, 16};
+        coord[2] = {0, 15};
+        coord[3] = {1, 15};
+        for (int i = 0; i < 4; i++) {
+            grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord);
+            grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord);
+        }
     }
-
-    for (int i = 0; i < 4; i++) {
-        grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord);
-        grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord);
+    if (type == "O") {
+        coord[0] = {0, 17};
+        coord[1] = {0, 16};
+        coord[2] = {1, 17};
+        coord[3] = {1, 16};
+        for (int i = 0; i < 4; i++) {
+            grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord);
+            grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord);
+        }
     }
 }
