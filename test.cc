@@ -8,7 +8,6 @@ ostream& operator<<( ostream & out, Board &b) {
             if (x != 0) {
                 out << " ";
             }
-            //cout << "here?" << endl;
             out << b.getVal(x, y);
         }
         out << endl;
@@ -17,29 +16,38 @@ ostream& operator<<( ostream & out, Board &b) {
     return out;
 }
 
-int main(int args, char *argv[]) {
+int main(int argc, char *argv[]) {
     Board b;
     cout << b << endl;
-    b.next("I");
+    if (argc == 2) {
+        string newBlock = string(1, argv[1][0]);
+        b.next(newBlock);
+    } else {
+        b.next("L");
+    }
     cout << b << endl;
-    char cmd;
+    string cmd;
     while (cin >> cmd) {
-        switch (cmd) {
-            case 'r': {
+        if (cmd == "move") {
+            char dir;
+            cin >> dir;
+            if (dir == 'r') {
                 b.move("r");
                 cout << b << endl;
-                break;
-            }
-            case 'l': {
+            } else if (dir == 'l') {
                 b.move("l");
                 cout << b << endl;
-                break;
-            }
-            case 'd': {
+            } else if (dir == 'd') {
                 b.move("d");
                 cout << b << endl;
-                break;
+            } else {
+                cout << "Invalid Direction!" << endl;
             }
+        } else if (cmd == "drop") {
+            b.drop();
+            cout << b << endl;
+        } else {
+            cout << "Invalid Argument!" << endl;
         }
     }
 }
