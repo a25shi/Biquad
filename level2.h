@@ -5,7 +5,7 @@
 class level2 : public generation{
 public:
     level2();
-    char genBlock() override
+    char genBlock() override;
 };
 
 

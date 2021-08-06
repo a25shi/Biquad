@@ -1,4 +1,9 @@
 #include "board.h"
+#include "level0.h"
+#include "level1.h"
+#include "level2.h"
+#include "level3.h"
+#include "level4.h"
 using namespace std;
 
 ostream& operator<<( ostream & out, Board &b) {
@@ -18,13 +23,11 @@ ostream& operator<<( ostream & out, Board &b) {
 
 int main(int argc, char *argv[]) {
     Board b;
+    level1 l;
     cout << b << endl;
-    if (argc == 2) {
-        string newBlock = string(1, argv[1][0]);
-        b.next(newBlock);
-    } else {
-        b.next("L");
-    }
+    char block = l.genBlock();
+    string s (1, block);
+    b.next(s);
     cout << b << endl;
     string cmd;
     while (cin >> cmd) {

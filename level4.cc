@@ -24,4 +24,5 @@ char level4::genBlock() {
     else if (seed == 1) {
         return 'T';
     }
+    return ' ';
 }
