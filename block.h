@@ -1,23 +1,23 @@
 #ifndef BIQUAD_BLOCK_H
 #define BIQUAD_BLOCK_H
-#include <vector>
-#include <string>
+#include "decorator.h"
+
 using namespace std;
 
-class block {
-    vector<vector<int>> off;
-    bool isRandom = false;
-    string colour;
-    int level = 1;
-    char type;
+class Cell;
+
+class Block : public Decorator {
+    string type;
+    bool temp;
+    vector<vector<int>> coord;
 public:
-    virtual bool drop() = 0;
-    virtual bool rotateClockwise() = 0;
-    virtual bool rotateCounter() = 0;
-    virtual bool moveRight() = 0;
-    virtual bool moveLeft() = 0;
-    virtual bool moveDown() = 0;
-    virtual void reset() = 0;
+    Block(Cell *component, string type, vector<vector<int>> coord);
+    string getType() const override;
+    bool isTemp() const override;
+    void setTemp(bool state) override;
+    vector<vector<int>> getCoord() const override;
+    void changeCoord(int diff, string axis) override;
 };
+
 
 #endif //BIQUAD_BLOCK_H
