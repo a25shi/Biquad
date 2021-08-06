@@ -23,10 +23,12 @@ class Board {
     bool isHeavy;
     int curLevel;
     vector< vector<Cell*> > grid;
+    vector<vector<int>> curr;
     int rowsFull();
     bool checkSpecial(int rows);
     void removeRow(int rowNum);
     void updateScore(int addPoints);
+    void wipeTemp();
     void reset();
 
 public:
@@ -35,7 +37,7 @@ public:
     string getVal(int x, int y);
     void next(string type);
     bool move(string dir);
-    bool wipeTemp();
+    void drop();
 };
 
 #endif //BIQUAD_BOARD_H

@@ -11,6 +11,7 @@ class Basecell : public Cell {
         Basecell();
         string getType() const override;
         bool isTemp() const override;
+        void setTemp(bool state) override;
         vector<vector<int>> getCoord() const override;
         void changeCoord(int diff, string axis) override;
 };

@@ -15,6 +15,10 @@ bool Block::isTemp() const {
     return temp;
 }
 
+void Block::setTemp(bool state) {
+    temp = state;
+}
+
 vector<vector<int>> Block::getCoord() const {
     return coord;
 }
