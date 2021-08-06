@@ -78,25 +78,74 @@ void Board::next(string type) {
         vector<int> row;
         coord.emplace_back(row);
     }
-
     if (type == "L") {
-        coord[0] = {0, 17};
-        coord[1] = {0, 16};
-        coord[2] = {0, 15};
-        coord[3] = {1, 15};
+        coord[0] = {0, 13};
+        coord[1] = {1, 13};
+        coord[2] = {2, 13};
+        coord[3] = {2, 14};
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord);
             grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord);
         }
     }
+    if (type == "J") {
+        coord[0] = {0, 14};
+        coord[1] = {0, 13};
+        coord[2] = {1, 13};
+        coord[3] = {2, 13};
+        for (int i = 0; i < 4; i++) {
+            grid[coord[i][1]][coord[i][0]] = new BlockJ(grid[coord[i][1]][coord[i][0]], coord);
+            grid[coord[i][1]][coord[i][0]] = new BlockJ(grid[coord[i][1]][coord[i][0]], coord);
+        }
+    }
     if (type == "O") {
-        coord[0] = {0, 17};
-        coord[1] = {0, 16};
-        coord[2] = {1, 17};
-        coord[3] = {1, 16};
+        coord[0] = {0, 14};
+        coord[1] = {0, 13};
+        coord[2] = {1, 13};
+        coord[3] = {1, 14};
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord);
             grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord);
+        }
+    }
+    if (type == "Z") {
+        coord[0] = {0, 14};
+        coord[1] = {2, 13};
+        coord[2] = {1, 13};
+        coord[3] = {1, 14};
+        for (int i = 0; i < 4; i++) {
+            grid[coord[i][1]][coord[i][0]] = new BlockZ(grid[coord[i][1]][coord[i][0]], coord);
+            grid[coord[i][1]][coord[i][0]] = new BlockZ(grid[coord[i][1]][coord[i][0]], coord);
+        }
+    }
+    if (type == "S") {
+        coord[0] = {0, 13};
+        coord[1] = {2, 14};
+        coord[2] = {1, 13};
+        coord[3] = {1, 14};
+        for (int i = 0; i < 4; i++) {
+            grid[coord[i][1]][coord[i][0]] = new BlockS(grid[coord[i][1]][coord[i][0]], coord);
+            grid[coord[i][1]][coord[i][0]] = new BlockS(grid[coord[i][1]][coord[i][0]], coord);
+        }
+    }
+    if (type == "T") {
+        coord[0] = {0, 14};
+        coord[1] = {1, 14};
+        coord[2] = {2, 14};
+        coord[3] = {1, 13};
+        for (int i = 0; i < 4; i++) {
+            grid[coord[i][1]][coord[i][0]] = new BlockT(grid[coord[i][1]][coord[i][0]], coord);
+            grid[coord[i][1]][coord[i][0]] = new BlockT(grid[coord[i][1]][coord[i][0]], coord);
+        }
+    }
+    if (type == "I") {
+        coord[0] = {0, 14};
+        coord[1] = {1, 14};
+        coord[2] = {2, 14};
+        coord[3] = {3, 14};
+        for (int i = 0; i < 4; i++) {
+            grid[coord[i][1]][coord[i][0]] = new BlockI(grid[coord[i][1]][coord[i][0]], coord);
+            grid[coord[i][1]][coord[i][0]] = new BlockI(grid[coord[i][1]][coord[i][0]], coord);
         }
     }
 }

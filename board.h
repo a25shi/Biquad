@@ -7,6 +7,11 @@
 #include "basecell.h"
 #include "blockL.h"
 #include "blockO.h"
+#include "blockI.h"
+#include "blockJ.h"
+#include "blockZ.h"
+#include "blockS.h"
+#include "blockT.h"
 using namespace std;
 
 class Board {
