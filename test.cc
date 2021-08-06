@@ -1,5 +1,4 @@
 #include "board.h"
-
 using namespace std;
 
 ostream& operator<<( ostream & out, Board &b) {
@@ -21,7 +20,7 @@ ostream& operator<<( ostream & out, Board &b) {
 int main(int args, char *argv[]) {
     Board b;
     cout << b << endl;
-    b.next("L");
+    b.next("O");
     cout << b << endl;
     char cmd;
     while (cin >> cmd) {

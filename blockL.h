@@ -1,8 +1,6 @@
 #ifndef _BLOCK_L_H_
 #define _BLOCK_L_H_
 #include "decorator.h"
-#include <vector>
-#include <string>
 
 using namespace std;
 
