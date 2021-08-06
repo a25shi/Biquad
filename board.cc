@@ -218,6 +218,36 @@ void Board::next(string type) {
     }
 }
 
+vector<int> Board::rowsFull() {
+    vector<int> fullRows;
+    for (int y = 0; y < rows; y++) {
+        bool rowFull = true;
+        for (int x = 0; x < cols; x++) {
+            if (grid[y][x]->getType() == ".") {
+                rowFull = false;
+                break;
+            }
+        }
+        if (rowFull) {
+            fullRows.emplace_back(y);
+        }
+    }
+
+    return fullRows;
+}
+
+void Board::removeRow(int rowNum) {
+    for (int x = 0; x < cols; x++) {
+        delete grid[rowNum][x];
+    }
+
+    for (int y = rowNum; y < rows - 1; y++) {
+        for (int i = 0; i < cols; i++) {
+            grid[y][i] = grid[y + 1][i];
+        }
+    }
+}
+
 void Board::drop() {
     for (int x = 0; x < 18; x++) {
         bool success = this->move("d");
@@ -225,5 +255,10 @@ void Board::drop() {
 
     for (int y = 0; y < 4; y++) {
         grid[curr[y][1]][curr[y][0]]->setTemp(false);
+    }
+
+    vector<int> emptyRow = rowsFull();
+    for (int i = emptyRow.size() - 1; i >= 0; i--) {
+        removeRow(emptyRow.at(i));
     }
 }

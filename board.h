@@ -22,9 +22,11 @@ class Board {
     bool isBlind;
     bool isHeavy;
     int curLevel;
+
     vector< vector<Cell*> > grid;
     vector<vector<int>> curr;
-    int rowsFull();
+
+    vector<int> rowsFull();
     bool checkSpecial(int rows);
     void removeRow(int rowNum);
     void updateScore(int addPoints);
