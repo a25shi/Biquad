@@ -6,7 +6,7 @@
 #include "level4.h"
 using namespace std;
 
-void blockGen(Board b, generation* l) {
+void blockGen(Board &b, generation* l) {
     char block = l->genBlock();
     string s (1, block);
     b.next(s);
