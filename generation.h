@@ -5,7 +5,8 @@
 class generation {
     int level;
 public:
-    generation(int level);
+    generation(int level) : level{level} {};
+    int getLevel();
     virtual char genBlock() = 0;
 };
 

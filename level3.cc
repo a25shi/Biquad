@@ -25,4 +25,5 @@ char level3::genBlock() {
     else if (seed == 1) {
         return 'T';
     }
+    return ' ';
 }
