@@ -20,7 +20,7 @@ ostream& operator<<( ostream & out, Board &b) {
 int main(int args, char *argv[]) {
     Board b;
     cout << b << endl;
-    b.next("O");
+    b.next("I");
     cout << b << endl;
     char cmd;
     while (cin >> cmd) {
