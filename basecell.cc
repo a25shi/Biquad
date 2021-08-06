@@ -22,3 +22,14 @@ vector<vector<int>> Basecell::getCoord() const {
 
 void Basecell::changeCoord(int diff, string axis) {
 }
+
+void Basecell::removeCoord(int x, int y) {
+}
+
+int Basecell::getActiveCoord() const {
+    return 1;
+}
+
+int Basecell::getLevel() const {
+    return -1;
+}

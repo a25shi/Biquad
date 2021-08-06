@@ -1,3 +1,3 @@
 #include "blockI.h"
 
-BlockI::BlockI(Cell *component, vector<vector<int>> coord) : Block{component, "I", coord} {}
+BlockI::BlockI(Cell *component, vector<vector<int>> coord, int curLevel) : Block{component, "I", coord, curLevel} {}

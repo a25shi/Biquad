@@ -8,7 +8,7 @@ class Cell;
 
 class BlockL : public Block {
 public:
-    BlockL(Cell *component, vector<vector<int>> coord);
+    BlockL(Cell *component, vector<vector<int>> coord, int curLevel);
 };
 
 #endif
