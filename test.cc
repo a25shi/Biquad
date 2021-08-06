@@ -6,6 +6,12 @@
 #include "level4.h"
 using namespace std;
 
+void blockGen(Board b, generation* l) {
+    char block = l->genBlock();
+    string s (1, block);
+    b.next(s);
+}
+
 ostream& operator<<( ostream & out, Board &b) {
     cout << string(21, '-') << endl;
     for (int y = 17; y >= 0; y--) {
@@ -25,9 +31,7 @@ int main(int argc, char *argv[]) {
     Board b;
     level1 l;
     cout << b << endl;
-    char block = l.genBlock();
-    string s (1, block);
-    b.next(s);
+    blockGen(b, &l);
     cout << b << endl;
     string cmd;
     while (cin >> cmd) {
@@ -48,6 +52,7 @@ int main(int argc, char *argv[]) {
             }
         } else if (cmd == "drop") {
             b.drop();
+            blockGen(b, &l);
             cout << b << endl;
         } else {
             cout << "Invalid Argument!" << endl;
