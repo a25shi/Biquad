@@ -43,9 +43,10 @@ public:
     void drop();
     int getScore();
     int getLevel();
+    void setLevel(int level);
     void setNext(string type);
+    bool replaceCurr(string type);
     string getNext();
-
 };
 
 #endif //BIQUAD_BOARD_H

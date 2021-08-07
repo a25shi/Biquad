@@ -1,6 +1,8 @@
 #include "board.h"
 using namespace std;
-
+void Board::setLevel(int level) {
+    curLevel = level;
+}
 Board::Board() {
     for (int y = 0; y < rows; y++) {
         vector<Cell*> cell;
@@ -287,4 +289,18 @@ void Board::setNext(string type) {
 
 string Board::getNext() {
     return nextBlock;
+}
+
+bool Board::replaceCurr(string type) {
+    for (int x = 0; x < 4; x++) {
+        delete grid[curr[x][1]][curr[x][0]];
+        grid[curr[x][1]][curr[x][0]] = new Basecell{};
+    }
+
+    string temp = nextBlock;
+    nextBlock = type;
+    next();;
+    setNext(temp);
+
+    return true;
 }
