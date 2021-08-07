@@ -1,5 +1,5 @@
 #include "block.h"
-
+#include <iostream>
 using namespace std;
 
 Block::Block(Cell *component, string type, vector<vector<int>> coord, int level) : Decorator{component},
@@ -35,10 +35,12 @@ void Block::changeCoord(int diff, string axis) {
 }
 
 void Block::removeCoord(int x, int y) {
+    int pos = -1;
     for (int i = 0; i < coord.size(); i++) {
         if (coord[i][0] == x && coord[i][1] == y) {
             coord[i][0] = -1;
             coord[i][1] = -1;
+            pos = i;
             break;
         }
     }
