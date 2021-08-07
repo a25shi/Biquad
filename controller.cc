@@ -24,9 +24,20 @@ ostream &operator<<(ostream &out, Board &b) {
     out << setw(5) << b.getScore() << endl;
 
     out << string(11, '-') << endl;
+    bool isBlind = b.getBlind();
     for (int y = 17; y >= 0; y--) {
         for (int x = 0; x < 11; x++) {
-            out << b.getVal(x, y);
+            if (isBlind) {
+                if (x >= 2 && x <= 8 &&
+                    y >= 2 && y <= 12) {
+                    out << "?";
+                }
+                else {
+                    out << b.getVal(x, y);
+                }
+            } else {
+                out << b.getVal(x, y);
+            }
         }
         out << endl;
     }
@@ -81,8 +92,24 @@ void controller::play(string text1, string text2, int init) {
         }
         if (cmd == "right") {
             cur->move("r");
+            if (cur->getHeavy()) {
+                bool move1 = cur->move("d");
+                bool move2 = cur->move("d");
+                if (!(move1 && move2)) {
+                    cur->drop();
+                    cur->setHeavy(false);
+                }
+            }
             cout << *cur << endl;
         } else if (cmd == "left") {
+            if (cur->getHeavy()) {
+                bool move1 = cur->move("d");
+                bool move2 = cur->move("d");
+                if (!(move1 && move2)) {
+                    cur->drop();
+                    cur->setHeavy(false);
+                }
+            }
             cur->move("l");
             cout << *cur << endl;
         } else if (cmd == "down") {
@@ -90,6 +117,12 @@ void controller::play(string text1, string text2, int init) {
             cout << *cur << endl;
         } else if (cmd == "drop") {
             cur->drop();
+            if (cur->getBlind()) {
+                cur->setBlind(false);
+            }
+            if (cur->getHeavy()) {
+                cur->setHeavy(false);
+            }
             if (player == true) {
                 blockGen(*cur, l1.get(), true);
             }
@@ -128,7 +161,7 @@ void controller::play(string text1, string text2, int init) {
                    cmd == "S" || cmd == "Z" || cmd == "T") {
             bool done = cur->replaceCurr(cmd);
             cout << *cur << endl;
-        } else if (cmd == "norandom file") {
+        } else if (cmd == "norandom") {
 
         } else if (cmd == "random") {
 
@@ -137,9 +170,11 @@ void controller::play(string text1, string text2, int init) {
         } else if (cmd == "restart") {
 
         } else if (cmd == "clockwise") {
-
+            bool done = cur->rotate("c");
+            cout << *cur << endl;
         } else if (cmd == "counterclockwise") {
-
+            bool done = cur->rotate("cc");
+            cout << *cur << endl;
         }
         else {
             cout << "Invalid Argument!" << endl;
