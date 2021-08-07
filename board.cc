@@ -16,6 +16,21 @@ Board::Board() {
         vector<int> row = {-1,-1};
         curr.emplace_back(row);
     }
+
+    rotationL = {{0, 2, -1, 1, -2, 0, -1, -1}, {2, 0, 1, 1, 0, 2, -1, 1}, 
+                 {0, -2, 1, -1, 2, 0, 1, 1}, {-2, 0, -1, -1, 0, -2, 1, -1}};
+    rotationO = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, 
+                 {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
+    rotationJ = {{1, 1, 0, 2, -1, 1, -2, 0}, {1, -1, 2, 0, 1, 1, 0, 2},
+                 {-1, -1, 0, -2, 1, -1, 2, 0}, {-1, 1, -2, 0, -1, -1, 0, -2}};
+    rotationT = {{1, 1, 0, 0, -1, -1, -1, 1}, {1, -1, 0, 0, -1, 1, 1, 1},
+                 {-1, -1, 0, 0, 1, 1, 1, -1}, {-1, 1, 0, 0, 1, -1, -1, -1}};
+    rotationZ = {{1, 1, 0, 0, -1, 1, -2, 0}, {1, -2, 0, 0, 1, -1, 0, 1},
+                 {-2, 0, 0, 0, -1, 1, 1, 1}, {0, 1, 0, 0, 1, -1, 1, -2}};
+    rotationS = {{-1, -1, 0, 0, -1, 1, 0, 2}, {-1, 0, 0, 0, 1, -1, 2, -1},
+                 {0, 2, 0, 0, -1, 1, -1, -1}, {2, -1, 0, 0, 1, -1, -1, 0}};
+    rotationI = {{1, 2, 0, 1, -1, 0, -2, -1}, {2, -1, 1, 0, 0, 1, -1, 2},
+                 {-1, -2, 0, -1, 1, 0, 2, 1}, {-2, 1, -1, 0, 0, -1, 1, -2}};
 }
 
 Board::~Board() {
@@ -25,7 +40,7 @@ Board::~Board() {
     grid.clear();
 }
 
-string Board::getVal(int x, int y) {
+string Board::getVal(int x, int y) const {
     return grid.at(y).at(x)->getType();
 }
 
@@ -41,104 +56,22 @@ bool Board::move(string dir) {
 
     vector<vector<int>> newCoord;
     if (dir == "r") {
-        for (int i = 0; i < 4; i++) {
-            int new_x = curr[i][0] + 1;
-            int y = curr[i][1];
-            bool same = false;
-
-            for (int m = 0; m < 4; m++) {
-                if (curr[m][1] == y && curr[m][0] == new_x) {
-                    same = true;
-                    break;
-                }
-            }
-
-            if (!same) {
-                if (new_x > 10 || (grid[y][new_x]->getType() != ".")) {
-                    return false;
-                }
-            }
-        }
-        grid[curr[0][1]][curr[0][0]]->changeCoord(1, "x");
-        newCoord = grid[curr[0][1]][curr[0][0]]->getCoord();
+        newCoord = grid[curr[0][1]][curr[0][0]]->changeCoord(1, "x");
     } else if (dir == "l") {
-        for (int i = 0; i < 4; i++) {
-            int new_x = curr[i][0] - 1;
-            int y = curr[i][1];
-            bool same = false;
-            for (int m = 0; m < 4; m++) {
-                if (curr[m][1] == y && curr[m][0] == new_x) {
-                    same = true;
-                    break;
-                }
-            }
-
-            if (!same) {
-                if (new_x < 0 || (grid[y][new_x]->getType() != ".")) {
-                    return false;
-                }
-            }
-        }
-        grid[curr[0][1]][curr[0][0]]->changeCoord(-1, "x");
-        newCoord = grid[curr[0][1]][curr[0][0]]->getCoord();
+        newCoord = grid[curr[0][1]][curr[0][0]]->changeCoord(-1, "x");
     } else {
-         for (int i = 0; i < 4; i++) {
-            int x = curr[i][0];
-            int new_y = curr[i][1] - 1;
-            bool same = false;
+        newCoord = grid[curr[0][1]][curr[0][0]]->changeCoord(-1, "y");
+    }
 
-            for (int m = 0; m < 4; m++) {
-                if (curr[m][0] == x && curr[m][1] == new_y) {
-                    same = true;
-                    break;
-                }
-            }
-
-            if (!same) {
-                if (new_y < 0 || (grid[new_y][x]->getType() != ".")) {
-                    return false;
-                }
-            }
-        }
-        grid[curr[0][1]][curr[0][0]]->changeCoord(-1, "y");
-        newCoord = grid[curr[0][1]][curr[0][0]]->getCoord();
+    if (!(checkMove(newCoord))) {
+        return false;
     }
 
     int genLevel = grid[curr[0][1]][curr[0][0]]->getLevel();
+    int stage = grid[curr[0][1]][curr[0][0]]->getStage();
     wipeTemp();
-    
-    for (int i = 0; i < 4; i++) {
-        if (type == "L") {
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockL(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockL(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-        } else if (type == "O") {
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockO(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockO(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-        } else if (type == "J") {
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockJ(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockJ(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-        } else if (type == "T") {
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockT(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockT(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-        } else if (type == "Z") {
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockZ(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockZ(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-        } else if (type == "S") {
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockS(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockS(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-        } else if (type == "T") {
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockT(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockT(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-        } else if (type == "I") {
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockI(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-            grid[newCoord[i][1]][newCoord[i][0]] = new BlockI(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel);
-        }
-    }
+    resetCurr(newCoord, type, genLevel, stage);
 
-    for (int i = 0; i < 4; i++) {
-        curr[i][0] = newCoord[i][0];
-        curr[i][1] = newCoord[i][1];
-    }
     return true;
 }
 
@@ -148,68 +81,41 @@ void Board::next() {
         vector<int> row;
         coord.emplace_back(row);
     }
+
     if (nextBlock == "L") {
-        coord[0] = {0, 13};
-        coord[1] = {1, 13};
-        coord[2] = {2, 13};
-        coord[3] = {2, 14};
+        coord = {{0, 13}, {1, 13}, {2, 13}, {2, 14}};
         for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord, curLevel);
-            grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord, curLevel);
+            grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationL, 0);
         }
     } else if (nextBlock == "J") {
-        coord[0] = {0, 14};
-        coord[1] = {0, 13};
-        coord[2] = {1, 13};
-        coord[3] = {2, 13};
+        coord = {{0, 14}, {0, 13}, {1, 13}, {2, 13}};
         for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = new BlockJ(grid[coord[i][1]][coord[i][0]], coord, curLevel);
-            grid[coord[i][1]][coord[i][0]] = new BlockJ(grid[coord[i][1]][coord[i][0]], coord, curLevel);
+            grid[coord[i][1]][coord[i][0]] = new BlockJ(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationJ, 0);
         }
     } else if (nextBlock == "O") {
-        coord[0] = {0, 14};
-        coord[1] = {0, 13};
-        coord[2] = {1, 13};
-        coord[3] = {1, 14};
+        coord = {{0, 14}, {0, 13}, {1, 13}, {1, 14}};
         for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord, curLevel);
-            grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord, curLevel);
+            grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationO, 0);
         }
     } else if (nextBlock == "Z") {
-        coord[0] = {0, 14};
-        coord[1] = {2, 13};
-        coord[2] = {1, 13};
-        coord[3] = {1, 14};
+        coord = {{0, 14}, {1, 14}, {1, 13}, {2, 13}};
         for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = new BlockZ(grid[coord[i][1]][coord[i][0]], coord, curLevel);
-            grid[coord[i][1]][coord[i][0]] = new BlockZ(grid[coord[i][1]][coord[i][0]], coord, curLevel);
+            grid[coord[i][1]][coord[i][0]] = new BlockZ(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationZ, 0);
         }
     } else if (nextBlock == "S") {
-        coord[0] = {0, 13};
-        coord[1] = {2, 14};
-        coord[2] = {1, 13};
-        coord[3] = {1, 14};
+        coord = {{2, 14}, {1, 14}, {1, 13}, {0, 13}};
         for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = new BlockS(grid[coord[i][1]][coord[i][0]], coord, curLevel);
-            grid[coord[i][1]][coord[i][0]] = new BlockS(grid[coord[i][1]][coord[i][0]], coord, curLevel);
+            grid[coord[i][1]][coord[i][0]] = new BlockS(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationS, 0);
         }
     } else if (nextBlock == "T") {
-        coord[0] = {0, 14};
-        coord[1] = {1, 14};
-        coord[2] = {2, 14};
-        coord[3] = {1, 13};
+        coord = {{0, 14}, {1, 14}, {2, 14}, {1, 13}};
         for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = new BlockT(grid[coord[i][1]][coord[i][0]], coord, curLevel);
-            grid[coord[i][1]][coord[i][0]] = new BlockT(grid[coord[i][1]][coord[i][0]], coord, curLevel);
+            grid[coord[i][1]][coord[i][0]] = new BlockT(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationT, 0);
         }
     } else if (nextBlock == "I") {
-        coord[0] = {0, 14};
-        coord[1] = {1, 14};
-        coord[2] = {2, 14};
-        coord[3] = {3, 14};
+        coord = {{0, 14}, {1, 14}, {2, 14}, {3, 14}};
         for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = new BlockI(grid[coord[i][1]][coord[i][0]], coord, curLevel);
-            grid[coord[i][1]][coord[i][0]] = new BlockI(grid[coord[i][1]][coord[i][0]], coord, curLevel);
+            grid[coord[i][1]][coord[i][0]] = new BlockI(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationI, 0);
         }
     } else {
         cout << "failure" << endl;
@@ -237,6 +143,31 @@ vector<int> Board::rowsFull() {
     }
 
     return fullRows;
+}
+
+void Board::resetCurr(vector<vector<int>> newCoord, string type, int genLevel, int stage) {
+    for (int i = 0; i < 4; i++) {
+        if (type == "L") {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockL(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel, rotationL, stage);
+        } else if (type == "O") {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockO(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel, rotationO, stage);
+        } else if (type == "J") {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockJ(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel, rotationJ, stage);
+        } else if (type == "T") {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockT(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel, rotationT, stage);
+        } else if (type == "Z") {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockZ(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel, rotationZ, stage);
+        } else if (type == "S") {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockS(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel, rotationS, stage);
+        } else {
+            grid[newCoord[i][1]][newCoord[i][0]] = new BlockI(grid[newCoord[i][1]][newCoord[i][0]], newCoord, genLevel, rotationI, stage);
+        }
+    }
+
+    for (int i = 0; i < 4; i++) {
+        curr[i][0] = newCoord[i][0];
+        curr[i][1] = newCoord[i][1];
+    }
 }
 
 void Board::removeRow(int rowNum) {
@@ -283,11 +214,11 @@ void Board::drop() {
     }
 }
 
-int Board::getScore() {
+int Board::getScore() const {
     return score;
 }
 
-int Board::getLevel() {
+int Board::getLevel() const {
     return curLevel;
 }
 
@@ -295,8 +226,31 @@ void Board::setNext(string type) {
     nextBlock = type;
 }
 
-string Board::getNext() {
+string Board::getNext() const {
     return nextBlock;
+}
+
+bool Board::checkMove(vector<vector<int>> newCoord) {
+    for (int x = 0; x < 4; x++) {
+        if (newCoord[x][0] < 0 || newCoord[x][0] > 10) {
+            return false;
+        } else if (newCoord[x][1] < 0 || newCoord[x][1] > 17) {
+            return false;
+        } else if (grid[newCoord[x][1]][newCoord[x][0]]->getType() != ".") {
+            bool blocking = true;
+            for (int y = 0; y < 4; y++) {
+                if (newCoord[x][0] == curr[y][0] && newCoord[x][1] == curr[y][1]) {
+                    blocking = false;
+                    break;
+                }
+            }
+            if (blocking) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 bool Board::replaceCurr(string type) {
@@ -309,6 +263,30 @@ bool Board::replaceCurr(string type) {
     nextBlock = type;
     next();;
     setNext(temp);
+
+    return true;
+}
+
+bool Board::rotate(string dir) {
+    vector<vector<int>> rotatedCoord;
+    int oldStage = grid[curr[0][1]][curr[0][0]]->getStage();
+    if (dir == "c") {
+        // clockwise
+        rotatedCoord = grid[curr[0][1]][curr[0][0]]->rotatedCoords("c");
+    } else {
+        rotatedCoord = grid[curr[0][1]][curr[0][0]]->rotatedCoords("cc");
+    }
+
+    if (!(checkMove(rotatedCoord))) {
+        grid[curr[0][1]][curr[0][0]]->setStage(oldStage);
+        return false;
+    }
+
+    string type = grid[curr[0][1]][curr[0][0]]->getType();
+    int genLevel = grid[curr[0][1]][curr[0][0]]->getLevel();
+    int stage = grid[curr[0][1]][curr[0][0]]->getStage();
+    wipeTemp();
+    resetCurr(rotatedCoord, type, genLevel, stage);
 
     return true;
 }

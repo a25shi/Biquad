@@ -97,6 +97,12 @@ int main(int argc, char *argv[]) {
                    cmd == "S" || cmd == "Z" || cmd == "T") {
                     bool done = b.replaceCurr(cmd);
                     cout << b << endl;
+        } else if (cmd == "counter") {
+            bool done = b.rotate("cc");
+            cout << b << endl;
+        } else if (cmd == "clockwise") {
+            bool done = b.rotate("c");
+            cout << b << endl;
         } else {
             cout << "Invalid Argument!" << endl;
         }

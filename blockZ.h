@@ -8,7 +8,7 @@ class Cell;
 
 class BlockZ : public Block {
 public:
-    BlockZ(Cell *component, vector<vector<int>> coord, int curLevel);
+    BlockZ(Cell *component, vector<vector<int>> coord, int curLevel, vector<vector<int>> rotation, int stage);
 };
 
 #endif //BIQUAD_BLOCKZ_H

@@ -8,7 +8,7 @@ class Cell;
 
 class BlockO : public Block {
 public:
-    BlockO(Cell *component, vector<vector<int>> coord, int curLevel);
+    BlockO(Cell *component, vector<vector<int>> coord, int curLevel, vector<vector<int>> rotation, int stage);
 };
 
 
