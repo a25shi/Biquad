@@ -44,6 +44,10 @@ string Board::getVal(int x, int y) const {
     return grid.at(y).at(x)->getType();
 }
 
+bool Board::getBlind() const {
+    return isBlind;
+}
+
 void Board::wipeTemp() {
     for (int x = 0; x < 4; x++) {
         delete grid[curr[x][1]][curr[x][0]];
@@ -230,7 +234,7 @@ string Board::getNext() const {
     return nextBlock;
 }
 
-bool Board::checkMove(vector<vector<int>> newCoord) {
+bool Board::checkMove(vector<vector<int>> newCoord) const {
     for (int x = 0; x < 4; x++) {
         if (newCoord[x][0] < 0 || newCoord[x][0] > 10) {
             return false;
@@ -251,6 +255,18 @@ bool Board::checkMove(vector<vector<int>> newCoord) {
     }
 
     return true;
+}
+
+void Board::setBlind(bool state) {
+    isBlind = state;
+}
+
+void Board::setHeavy(bool state) {
+    isHeavy = state;
+}
+
+bool Board::getHeavy() const {
+    return isHeavy;
 }
 
 bool Board::replaceCurr(string type) {

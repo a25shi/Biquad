@@ -20,8 +20,8 @@ class Board {
     int score = 0;
     bool textOutput = true;
     bool isRandom;
-    bool isBlind;
-    bool isHeavy;
+    bool isBlind = false;
+    bool isHeavy = false;
     int curLevel = 0;
     string nextBlock;
     vector<vector<int>> rotationL;
@@ -51,12 +51,16 @@ public:
     void drop();
     int getScore() const;
     int getLevel() const;
+    bool getBlind() const;
+    bool getHeavy() const;
     void setLevel(int level);
     void setNext(string type);
+    void setBlind(bool state);
+    void setHeavy(bool state);
     bool replaceCurr(string type);
     string getNext() const;
     bool rotate(string dir);
-    bool checkMove(vector<vector<int>> newCoord);
+    bool checkMove(vector<vector<int>> newCoord) const;
 };
 
 #endif //BIQUAD_BOARD_H
