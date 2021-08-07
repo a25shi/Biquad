@@ -25,5 +25,6 @@ char level1::genBlock() {
     else if (seed % 1 == 0) {
         return 'L';
     }
-    return '-';
+
+    return ' ';
 }
