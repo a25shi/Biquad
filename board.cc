@@ -241,8 +241,14 @@ vector<int> Board::rowsFull() {
 
 void Board::removeRow(int rowNum) {
     for (int x = 0; x < cols; x++) {
+        vector<vector<int>> allCoord = grid[rowNum][x]->getCoord();
+        for (int m = 0; m < 4; m++) {
+            if (!(allCoord[m][1] == -1 && allCoord[m][0] == -1)) {
+                grid[allCoord[m][1]][allCoord[m][0]]->removeCoord(x, rowNum);
+            }
+        }
         int coordsLeft = grid[rowNum][x]->getActiveCoord();
-        if (coordsLeft == 1) {
+        if (coordsLeft == 0) {
             int genLevel = grid[rowNum][x]->getLevel();
             int points = (genLevel + 1) * (genLevel + 1);
             score += points;
@@ -271,8 +277,10 @@ void Board::drop() {
         removeRow(emptyRow.at(i));
     }
 
-    int points = (curLevel + emptyRow.size()) * (curLevel + emptyRow.size());
-    score += points;
+    if (emptyRow.size() != 0) {
+        int points = (curLevel + emptyRow.size()) * (curLevel + emptyRow.size());
+        score += points;
+    }
 }
 
 int Board::getScore() {
