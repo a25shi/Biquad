@@ -13,59 +13,83 @@ void blockGen(Board &b, generation *l, bool call) {
     b.setNext(s);
 }
 
-ostream &operator<<(ostream &out, Board &b) {
+string getNextString(string type, int row) {
+    if (type == "I") {
+        if (row == 1) return "";
+        return "IIII";
+    } else if (type == "L") {
+        if (row == 1) return "  L";
+        return "LLL";
+    } else if (type == "J") {
+        if (row == 1) return "J";
+        return "JJJ";
+    } else if (type == "T") {
+        if (row == 1) return "TTT";
+        return " T";
+    } else if (type == "S") {
+        if (row == 1) return " SS";
+        return "SS";
+    } else if (type == "Z") {
+        if (row == 1) return "ZZ";
+        return " ZZ";
+    }
+
+    return "OO";
+}
+
+ostream &operator<<(ostream &out, vector<Board*> boards) {
     out << endl;
-    out << "Level:";
+
+    out << " Player 1: ";
     out << right;
-    out << setw(5) << b.getLevel() << endl;
+    out << setw(5) << " ";
+    out << " Player 2: \n" << endl;
+
+    out << "Level:";
+    out << setw(5) << boards[0]->getLevel();
+    out << setw(11) << "Level:";
+    out << setw(5) << boards[1]->getLevel() << endl;
 
     out << "Score:";
-    out << right;
-    out << setw(5) << b.getScore() << endl;
+    out << setw(5) << boards[0]->getScore();
+    out << setw(11) << "Score:";
+    out << setw(5) << boards[1]->getLevel() << endl;
 
+    out << string(11, '-');
+    out << setw(5) << " ";
     out << string(11, '-') << endl;
-    bool isBlind = b.getBlind();
+
     for (int y = 17; y >= 0; y--) {
         for (int x = 0; x < 11; x++) {
-            if (isBlind) {
-                if (x >= 2 && x <= 8 &&
-                    y >= 2 && y <= 12) {
-                    out << "?";
-                }
-                else {
-                    out << b.getVal(x, y);
-                }
-            } else {
-                out << b.getVal(x, y);
-            }
+            out << boards[0]->getVal(x, y);
+        }
+        out << setw(5)  << " ";
+        for (int i = 0; i < 11; i++) {
+            out << boards[1]->getVal(i, y);
         }
         out << endl;
     }
+    
+    out << string(11, '-');
+    out << setw(5) << " ";
     out << string(11, '-') << endl;
 
+    out << "Next:";
+    out << setw(11) << " ";
     out << "Next:" << endl;
-    string nextType = b.getNext();
-    if (nextType == "O") {
-        out << "OO" << endl;
-        out << "OO" << endl;
-    } else if (nextType == "L") {
-        out << "  L" << endl;
-        out << "LLL" << endl;
-    } else if (nextType == "J") {
-        out << "J" << endl;
-        out << "JJJ" << endl;
-    } else if (nextType == "T") {
-        out << "TTT" << endl;
-        out << " T" << endl;
-    } else if (nextType == "S") {
-        out << " SS" << endl;
-        out << "SS" << endl;
-    } else if (nextType == "Z") {
-        out << "ZZ" << endl;
-        out << " ZZ" << endl;
-    } else {
-        out << "IIII" << endl;
-    }
+
+    string type1 = boards[0]->getNext();
+    string type2 = boards[1]->getNext();
+
+    out << left;
+    out << setw(16) << getNextString(type1, 1);
+    out << getNextString(type2, 1) << endl;
+
+    out << setw(16) << getNextString(type1, 2);
+    out << getNextString(type2, 2) << endl;
+    
+    string nextType = boards[0]->getNext();
+    
     return out;
 }
 
@@ -76,6 +100,9 @@ void controller::play(string text1, string text2, int init) {
     RAIILevel p2level{text2};
     shared_ptr<generation> l1 = p1level.getLevel(init);
     shared_ptr<generation> l2 = p2level.getLevel(init);
+
+    vector<Board*> boards = {p1, p2};
+    cout << boards << endl;
 
     blockGen(*p1, l1.get(), false);
     blockGen(*p1, l1.get(), true);
@@ -100,7 +127,7 @@ void controller::play(string text1, string text2, int init) {
                     cur->setHeavy(false);
                 }
             }
-            cout << *cur << endl;
+            cout << boards << endl;
         } else if (cmd == "left") {
             if (cur->getHeavy()) {
                 bool move1 = cur->move("d");
@@ -111,10 +138,10 @@ void controller::play(string text1, string text2, int init) {
                 }
             }
             cur->move("l");
-            cout << *cur << endl;
+            cout << boards << endl;
         } else if (cmd == "down") {
             cur->move("d");
-            cout << *cur << endl;
+            cout << boards << endl;
         } else if (cmd == "drop") {
             cur->drop();
             if (cur->getBlind()) {
@@ -129,7 +156,7 @@ void controller::play(string text1, string text2, int init) {
             else {
                 blockGen(*cur, l2.get(), true);
             }
-            cout << *cur << endl;
+            cout << boards << endl;
             player = !player;
         } else if (cmd == "levelup") {
             try {
@@ -141,7 +168,7 @@ void controller::play(string text1, string text2, int init) {
                     l2 = p2level.getLevel(level + 1);
                 }
                 cur->setLevel(level + 1);
-                cout << *cur << endl;
+                cout << boards << endl;
             }
             catch (error) {}
         } else if (cmd == "leveldown") {
@@ -154,13 +181,13 @@ void controller::play(string text1, string text2, int init) {
                     l2 = p2level.getLevel(level - 1);
                 }
                 cur->setLevel(level - 1);
-                cout << *cur << endl;
+                cout << boards << endl;
             }
             catch (error) {}
         } else if (cmd == "I" || cmd == "L" || cmd == "J" || cmd == "O" ||
                    cmd == "S" || cmd == "Z" || cmd == "T") {
             bool done = cur->replaceCurr(cmd);
-            cout << *cur << endl;
+            cout << boards << endl;
         } else if (cmd == "norandom") {
 
         } else if (cmd == "random") {
@@ -171,10 +198,10 @@ void controller::play(string text1, string text2, int init) {
 
         } else if (cmd == "clockwise") {
             bool done = cur->rotate("c");
-            cout << *cur << endl;
+            cout << boards << endl;
         } else if (cmd == "counterclockwise") {
             bool done = cur->rotate("cc");
-            cout << *cur << endl;
+            cout << boards << endl;
         }
         else {
             cout << "Invalid Argument!" << endl;
