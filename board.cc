@@ -196,7 +196,7 @@ void Board::removeRow(int rowNum) {
     }
 }
 
-void Board::drop() {
+bool Board::drop() {
     for (int x = 0; x < 18; x++) {
         bool success = this->move("d");
     }
@@ -214,6 +214,12 @@ void Board::drop() {
         int points = (curLevel + emptyRow.size()) * (curLevel + emptyRow.size());
         score += points;
     }
+
+    if (emptyRow.size() >= 2) {
+        return true;
+    }
+
+    return false;
 }
 
 int Board::getScore() const {
@@ -288,7 +294,7 @@ bool Board::replaceCurr(string type) {
     return true;
 }
 
-bool Board::rotate(string dir) {
+void Board::rotate(string dir) {
     vector<vector<int>> rotatedCoord;
     int oldStage = grid[curr[0][1]][curr[0][0]]->getStage();
     if (dir == "c") {
@@ -300,7 +306,7 @@ bool Board::rotate(string dir) {
 
     if (!(checkMove(rotatedCoord))) {
         grid[curr[0][1]][curr[0][0]]->setStage(oldStage);
-        return false;
+        return;
     }
 
     string type = grid[curr[0][1]][curr[0][0]]->getType();
@@ -308,6 +314,4 @@ bool Board::rotate(string dir) {
     int stage = grid[curr[0][1]][curr[0][0]]->getStage();
     wipeTemp();
     resetCurr(rotatedCoord, type, genLevel, stage);
-
-    return true;
 }

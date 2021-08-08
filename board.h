@@ -41,6 +41,7 @@ class Board {
     void wipeTemp();
     void reset();
     void resetCurr(vector<vector<int>> newCoord, string type, int genLevel, int stage);
+    bool checkMove(vector<vector<int>> newCoord) const;
 
 public:
     Board();
@@ -48,7 +49,7 @@ public:
     string getVal(int x, int y) const;
     void next();
     bool move(string dir);
-    void drop();
+    bool drop();
     int getScore() const;
     int getLevel() const;
     bool getBlind() const;
@@ -59,8 +60,7 @@ public:
     void setHeavy(bool state);
     bool replaceCurr(string type);
     string getNext() const;
-    bool rotate(string dir);
-    bool checkMove(vector<vector<int>> newCoord) const;
+    void rotate(string dir);
 };
 
 #endif //BIQUAD_BOARD_H
