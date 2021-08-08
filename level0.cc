@@ -1,7 +1,7 @@
 #include "level0.h"
 
-level0::level0(std::string file) : generation{0}, file{file}{
-    readFile();
+level0::level0(std::string file) : generation{0,file}{
+    readFile(file);
 }
 
 char level0::genBlock() {
@@ -11,10 +11,3 @@ char level0::genBlock() {
     return blocks[index++];
 }
 
-void level0::readFile() {
-    char input;
-    std::ifstream open(file);
-    while (open >> input) {
-        blocks.emplace_back(input);
-    }
-}

@@ -1,28 +1,28 @@
 #include "level3.h"
 
-level3::level3() : generation{3} {}
+level3::level3() : generation{3, ""} {}
 
 char level3::genBlock() {
+    if (isRandom == true) {
+        if (index >= blocks.size()) {
+            index = 0;
+        }
+        return blocks[index++];
+    }
     int seed = rand() % 9 + 1;
     if (seed == 7) {
         return 'I';
-    }
-    else if (seed == 6) {
+    } else if (seed == 6) {
         return 'J';
-    }
-    else if (seed == 5) {
+    } else if (seed == 5) {
         return 'L';
-    }
-    else if (seed == 4) {
+    } else if (seed == 4) {
         return 'O';
-    }
-    else if (seed == 3 || seed == 9) {
+    } else if (seed == 3 || seed == 9) {
         return 'S';
-    }
-    else if (seed == 2 || seed == 8) {
+    } else if (seed == 2 || seed == 8) {
         return 'Z';
-    }
-    else if (seed == 1) {
+    } else if (seed == 1) {
         return 'T';
     }
     return ' ';

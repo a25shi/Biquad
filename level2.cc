@@ -1,6 +1,6 @@
 #include "level2.h"
 
-level2::level2() : generation{2} {}
+level2::level2() : generation{2, ""} {}
 
 char level2::genBlock() {
     int seed = rand() % 7 + 1;

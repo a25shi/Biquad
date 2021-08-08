@@ -1,7 +1,13 @@
 #include "level4.h"
-level4::level4() : generation{4} {}
+level4::level4() : generation{4,""} {}
 
 char level4::genBlock() {
+    if (isRandom == true) {
+        if (index >= blocks.size()) {
+            index = 0;
+        }
+        return blocks[index++];
+    }
     int seed = rand() % 9 + 1;
     if (seed == 7) {
         return 'I';

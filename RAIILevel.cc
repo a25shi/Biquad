@@ -15,3 +15,8 @@ RAIILevel::RAIILevel(string text) {
     l.emplace_back(make_shared<level4>());
 }
 
+void RAIILevel::swapRandom(bool random, string file) {
+    l[3]->swapRandom(random, file);
+    l[4]->swapRandom(random, file);
+}
+

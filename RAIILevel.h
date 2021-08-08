@@ -14,7 +14,7 @@ class RAIILevel {
 public:
     RAIILevel(string text);
     shared_ptr<generation> getLevel(int level);
+    void swapRandom(bool random, string file);
 };
-
 
 #endif //PROJECTFILES_RAIILEVEL_H
