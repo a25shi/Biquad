@@ -2,7 +2,7 @@
 #include "controller.h"
 #include "RAIILevel.h"
 using namespace std;
-controller::controller(Board *p1, Board *p2) : p1{p1}, p2{p2}, cur{p1}, player{true}{}
+Controller::Controller(Board *p1, Board *p2) : p1{p1}, p2{p2}, cur{p1}, player{true}{}
 
 void blockGen(Board &b, generation *l, bool call) {
     char block = l->genBlock();
@@ -93,7 +93,9 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
     return out;
 }
 
-void controller::play(string text1, string text2, int init) {
+void Controller::applySpecial()
+
+void Controller::play(string text1, string text2, int init) {
     string cmd;
 
     RAIILevel p1level{text1};
@@ -119,36 +121,44 @@ void controller::play(string text1, string text2, int init) {
         }
         if (cmd == "right") {
             cur->move("r");
+            bool special = false;
             if (cur->getHeavy()) {
                 bool move1 = cur->move("d");
                 bool move2 = cur->move("d");
                 if (!(move1 && move2)) {
-                    cur->drop();
+                    special = cur->drop();
                     cur->setHeavy(false);
                 }
             }
             cout << boards << endl;
+            if (special) {
+                applySpecial(boards, player);
+            }
         } else if (cmd == "left") {
+            cur->move("l");
+            bool special = false;
             if (cur->getHeavy()) {
                 bool move1 = cur->move("d");
                 bool move2 = cur->move("d");
                 if (!(move1 && move2)) {
-                    cur->drop();
+                    special = cur->drop();
                     cur->setHeavy(false);
                 }
             }
-            cur->move("l");
             cout << boards << endl;
+            if (special) {
+                applySpecial(boards, player);
+            }
         } else if (cmd == "down") {
             cur->move("d");
             cout << boards << endl;
         } else if (cmd == "drop") {
-            cur->drop();
+            bool special = cur->drop();
             if (cur->getBlind()) {
                 cur->setBlind(false);
             }
             if (cur->getHeavy()) {
-                if (cur->getLevel() != 3 || cur->getLevel() != 4) {
+                if (cur->getLevel() < 3) {
                     cur->setHeavy(false);
                 }
             }
@@ -159,6 +169,9 @@ void controller::play(string text1, string text2, int init) {
                 blockGen(*cur, l2.get(), true);
             }
             cout << boards << endl;
+            if (special) {
+                applySpecial(boards, player);
+            }
             player = !player;
         } else if (cmd == "levelup") {
             try {

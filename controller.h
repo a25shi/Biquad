@@ -1,16 +1,16 @@
-#ifndef PROJECTFILES_CONTROLLER_H
-#define PROJECTFILES_CONTROLLER_H
+#ifndef _PROJECTFILES_CONTROLLER_H
+#define _PROJECTFILES_CONTROLLER_H
 #include "board.h"
 
-class controller {
+class Controller {
     Board* p1;
     Board* p2;
     Board* cur;
     bool player;
 public:
-    controller(Board* p1, Board* p2);
+    Controller(Board* p1, Board* p2);
     void play(string text1, string text2, int init);
 };
 
 
-#endif //PROJECTFILES_CONTROLLER_H
+#endif //_PROJECTFILES_CONTROLLER_H
