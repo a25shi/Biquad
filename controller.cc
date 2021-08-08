@@ -53,7 +53,7 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
     out << "Score:";
     out << setw(5) << boards[0]->getScore();
     out << setw(11) << "Score:";
-    out << setw(5) << boards[1]->getLevel() << endl;
+    out << setw(5) << boards[1]->getScore() << endl;
 
     out << string(11, '-');
     out << setw(5) << " ";
@@ -102,7 +102,6 @@ void controller::play(string text1, string text2, int init) {
     shared_ptr<generation> l2 = p2level.getLevel(init);
 
     vector<Board*> boards = {p1, p2};
-    cout << boards << endl;
 
     blockGen(*p1, l1.get(), false);
     blockGen(*p1, l1.get(), true);
@@ -110,6 +109,7 @@ void controller::play(string text1, string text2, int init) {
     blockGen(*p2, l1.get(), false);
     blockGen(*p2, l1.get(), true);
 
+    cout << boards << endl;
     while (cin >> cmd) {
         if (player == true) {
             cur = p1;
@@ -148,7 +148,9 @@ void controller::play(string text1, string text2, int init) {
                 cur->setBlind(false);
             }
             if (cur->getHeavy()) {
-                cur->setHeavy(false);
+                if (cur->getLevel() != 3 || cur->getLevel() != 4) {
+                    cur->setHeavy(false);
+                }
             }
             if (player == true) {
                 blockGen(*cur, l1.get(), true);
