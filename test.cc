@@ -41,6 +41,8 @@ int main(int argc, char *argv[]) {
     }
     Board p1;
     Board p2;
+    p1.setLevel(level);
+    p2.setLevel(level);
     controller ct{&p1, &p2};
     ct.play(in1, in2, level);
 }
