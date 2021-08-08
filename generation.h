@@ -10,14 +10,14 @@ protected:
     bool isRandom = false;
     int index = 0;
     int level;
-    string file;
+    std::string file;
     std::vector<char> blocks;
 public:
     generation(int level, std::string file) : level{level}, file{file}{};
     int getLevel();
-    void readFile(string inputfile);
+    void readFile();
+    void swapRandom(bool random, std::string file);
     virtual char genBlock() = 0;
-    void swapRandom(bool random, string file);
 };
 
 

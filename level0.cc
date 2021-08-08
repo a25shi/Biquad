@@ -1,7 +1,7 @@
 #include "level0.h"
 
-level0::level0(std::string file) : generation{0,file}{
-    readFile(file);
+level0::level0(std::string file) : generation{0, file}{
+    readFile();
 }
 
 char level0::genBlock() {

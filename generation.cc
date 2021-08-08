@@ -3,9 +3,9 @@ int generation::getLevel() {
     return level;
 }
 
-void generation::readFile(string inputfile = file) {
+void generation::readFile() {
     char input;
-    std::ifstream open(inputfile);
+    std::ifstream open(file);
     while (open >> input) {
         blocks.emplace_back(input);
     }
@@ -14,7 +14,7 @@ void generation::readFile(string inputfile = file) {
 void generation::swapRandom(bool random, std::string file) {
     this->file = file;
     if (random == true) {
-        readFile(file);
+        readFile();
     }
     isRandom = random;
     index = 0;
