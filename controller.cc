@@ -346,7 +346,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 else p2On = cur->replaceCurr(cmd);
                 cout << boards << endl;
             } else if (cmd.substr(0,5) == "noran") {
-                if (cur = p1) {
+                if (cur == p1) {
                     p1level.swapRandom(true, "");
                 } else {
                     p2level.swapRandom(true, "");
@@ -354,7 +354,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
             } else if (cmd.substr(0,3) == "ran") {
                 string file;
                 cin >> file;
-                if (cur = p1) {
+                if (cur == p1) {
                     p1level.swapRandom(true, file);
                 } else {
                     p2level.swapRandom(true, file);
