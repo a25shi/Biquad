@@ -41,13 +41,13 @@ class Board {
     void wipeTemp();
     void reset();
     void resetCurr(vector<vector<int>> newCoord, string type, int genLevel, int stage);
-    bool checkMove(vector<vector<int>> newCoord) const;
+    bool checkMove(vector<vector<int>> newCoord, bool checkCurr) const;
 
 public:
     Board();
     ~Board();
     string getVal(int x, int y) const;
-    void next();
+    bool next();
     bool move(string dir);
     bool drop();
     int getScore() const;

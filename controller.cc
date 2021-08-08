@@ -2,15 +2,25 @@
 #include "controller.h"
 #include "RAIILevel.h"
 using namespace std;
-Controller::Controller(Board *p1, Board *p2) : p1{p1}, p2{p2}, cur{p1}, player{true}{}
 
-void blockGen(Board &b, generation *l, bool call) {
+Controller::Controller(Board *p1, Board *p2) : p1{p1}, p2{p2}, cur{p1}, player{true} {}
+
+Controller::~Controller() {
+    boards.clear();
+}
+
+bool blockGen(Board &b, generation *l, bool call) {
     char block = l->genBlock();
     string s(1, block);
+    bool canPlace = true;
     if (call) {
-        b.next();
+        canPlace = b.next();
     }
-    b.setNext(s);
+    if (canPlace) {
+        b.setNext(s);
+    }
+
+    return canPlace;
 }
 
 string getNextString(string type, int row) {
@@ -117,49 +127,76 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
     return out;
 }
 
-bool Controller::applySpecial() {
-    cout << "Player ";
-    if (player) cout << "1";
-    cout << " has gained an advantage. Chose an action from the following: " << endl;
-    cout << "- 'blind': turns the center of your opponents' board blind for the next turn" << endl;
-    cout << "- 'heavy': turns your opponents' block heavy for the next turn" << endl;
-    cout << "- 'force X': where X is a block type, which replaces your opponents current block" << endl;
-    string specialEffect = "";
-    cin >> specialEffect;
-    bool done = true;
+void Controller::displayWinner() {
+    int p1Points = boards[0]->getScore();
+    int p2Points = boards[1]->getScore();
 
-    while (true) {
-        if (specialEffect == "blind") {
-            if (player) boards[1]->setBlind(true);
-            else boards[0]->setBlind(true);
-            break;
-        } else if (specialEffect == "heavy") {
-            if (player) boards[1]->setHeavy(true);
-            else boards[0]->setBlind(true);
-            break;
-        } else if (specialEffect == "force") {
-            string shape;
-            cin >> shape;
-            if (shape == "I" || shape == "L" || shape == "J" || shape == "O" ||
-                shape == "S" || shape == "Z" || shape == "T") {
-                    if (player) done = boards[1]->replaceCurr(shape);
-                    else done = boards[0]->replaceCurr(shape);
-                    break;
-            } else {
-                cout << "Invalid shape, try again!" << endl;
-            }
-        } else {
-            cout << "Invalid command, try again!" << endl;
-        }
-        cin >> specialEffect;
+    cout << string(15, '-') << endl;
+    cout << "Final Scores" << endl;
+    cout << "Player 1:";
+    cout << right;
+    cout << setw(6) << p1Points << endl;
+    cout << "Player 2:";
+    cout << setw(6) << p2Points << endl;
+    cout << endl;
+
+    if (p1Points > p2Points) {
+        cout << "Player 1 wins!" << endl;
+    } else if (p1Points < p2Points) {
+        cout << "Player 2 wins!" << endl;
+    } else {
+        cout << "It's a tie!" << endl;
     }
-
-    cout << boards << endl;
-
-    return done;
+    cout << string(15, '-') << endl;
 }
 
-void Controller::play(string text1, string text2, int init) {
+bool Controller::applySpecial(bool p1On, bool p2On, bool caller) {
+    if (p1On && p2On) {
+        cout << "Player ";
+        if (player) cout << "1";
+        cout << " has gained an advantage. Chose an action from the following: " << endl;
+        cout << "- 'blind': turns the center of your opponents' board blind for the next turn" << endl;
+        cout << "- 'heavy': turns your opponents' block heavy for the next turn" << endl;
+        cout << "- 'force X': where X is a block type, which replaces your opponents current block" << endl;
+        string specialEffect = "";
+        cin >> specialEffect;
+        bool done = true;
+
+        while (true) {
+            if (specialEffect == "blind") {
+                if (player) boards[1]->setBlind(true);
+                else boards[0]->setBlind(true);
+                break;
+            } else if (specialEffect == "heavy") {
+                if (player) boards[1]->setHeavy(true);
+                else boards[0]->setBlind(true);
+                break;
+            } else if (specialEffect == "force") {
+                string shape;
+                cin >> shape;
+                if (shape == "I" || shape == "L" || shape == "J" || shape == "O" ||
+                    shape == "S" || shape == "Z" || shape == "T") {
+                        if (player) done = boards[1]->replaceCurr(shape);
+                        else done = boards[0]->replaceCurr(shape);
+                        break;
+                } else {
+                    cout << "Invalid shape, try again!" << endl;
+                }
+            } else {
+                cout << "Invalid command, try again!" << endl;
+            }
+            cin >> specialEffect;
+        }
+
+        cout << boards << endl;
+
+        return done;
+    }
+
+    return caller;
+}
+
+void Controller::play(string text1, string text2, int init, int gameNo) {
     string cmd;
 
     RAIILevel p1level{text1};
@@ -176,128 +213,153 @@ void Controller::play(string text1, string text2, int init) {
     blockGen(*p2, l1.get(), true);
 
     cout << boards << endl;
+    bool p1On = true;
+    bool p2On = true;
+    bool gameOn = true;
+    int p1Count = 0;
+    int p2Count = 0;
 
-    while (cin >> cmd) {
+    if (gameNo != 1) {
+        cin >> cmd;
+    }
+
+    while (gameOn) {
         if (player == true) {
             cur = p1;
         }
         else {
             cur = p2;
         }
-        bool playerOn = true;
-        if (cmd == "right") {
-            cur->move("r");
-            bool special = false;
-            if (cur->getHeavy()) {
-                bool move1 = cur->move("d");
-                bool move2 = cur->move("d");
-                if (!(move1 && move2)) {
-                    special = cur->drop();
-                    cur->setHeavy(false);
+        if ((cur == p2 && p2On) ||
+            (cur == p1 && p1On)) {
+            if (cmd == "right") {
+                cur->move("r");
+                bool special = false;
+                if (cur->getHeavy()) {
+                    bool move1 = cur->move("d");
+                    bool move2 = cur->move("d");
+                    if (!(move1 && move2)) {
+                        special = cur->drop();
+                        cur->setHeavy(false);
+                    }
                 }
-            }
-            cout << boards << endl;
-            if (special) {
-                applySpecial();
-            }
-        } else if (cmd == "left") {
-            cur->move("l");
-            bool special = false;
-            if (cur->getHeavy()) {
-                bool move1 = cur->move("d");
-                bool move2 = cur->move("d");
-                if (!(move1 && move2)) {
-                    special = cur->drop();
-                    cur->setHeavy(false);
+                cout << boards << endl;
+                if (special) {
+                    if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
+                    else p2On = applySpecial(p1On, p2On, p2On);
                 }
-            }
-            cout << boards << endl;
-            if (special) {
-                applySpecial();
-            }
-        } else if (cmd == "down") {
-            cur->move("d");
-            cout << boards << endl;
-        } else if (cmd == "drop") {
-            bool special = cur->drop();
-            if (cur->getBlind()) {
-                cur->setBlind(false);
-            }
-            if (cur->getHeavy()) {
-                if (cur->getLevel() < 3) {
-                    cur->setHeavy(false);
+            } else if (cmd == "left") {
+                cur->move("l");
+                bool special = false;
+                if (cur->getHeavy()) {
+                    bool move1 = cur->move("d");
+                    bool move2 = cur->move("d");
+                    if (!(move1 && move2)) {
+                        special = cur->drop();
+                        cur->setHeavy(false);
+                    }
                 }
-            }
-            if (player == true) {
-                blockGen(*cur, l1.get(), true);
+                cout << boards << endl;
+                if (special) {
+                    if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
+                    else p2On = applySpecial(p1On, p2On, p2On);
+                }
+            } else if (cmd == "down") {
+                cur->move("d");
+                cout << boards << endl;
+            } else if (cmd == "drop") {
+                bool special = cur->drop();
+                if (cur->getBlind()) {
+                    cur->setBlind(false);
+                }
+                if (cur->getHeavy()) {
+                    if (cur->getLevel() < 3) {
+                        cur->setHeavy(false);
+                    }
+                }
+                if (player == true) {
+                    p1On = blockGen(*cur, l1.get(), true);
+                }
+                else {
+                    p2On = blockGen(*cur, l2.get(), true);
+                }
+                cout << boards << endl;
+                if (special) {
+                    if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
+                    else p2On = applySpecial(p1On, p2On, p2On);
+                }
+                player = !player;
+            } else if (cmd == "levelup") {
+                try {
+                    int level = cur->getLevel();
+                    if (player == true) {
+                        l1 = p1level.getLevel(level + 1);
+                    }
+                    else {
+                        l2 = p2level.getLevel(level + 1);
+                    }
+                    cur->setLevel(level + 1);
+                    cout << boards << endl;
+                }
+                catch (error) {}
+            } else if (cmd == "leveldown") {
+                try {
+                    int level = cur->getLevel();
+                    if (player == true) {
+                        l1 = p1level.getLevel(level - 1);
+                    }
+                    else {
+                        l2 = p2level.getLevel(level - 1);
+                    }
+                    cur->setLevel(level - 1);
+                    cout << boards << endl;
+                }
+                catch (error) {}
+            } else if (cmd == "I" || cmd == "L" || cmd == "J" || cmd == "O" ||
+                    cmd == "S" || cmd == "Z" || cmd == "T") {
+                if (p1 == cur) p1On = cur->replaceCurr(cmd);
+                else p2On = cur->replaceCurr(cmd);
+                cout << boards << endl;
+            } else if (cmd == "norandom") {
+
+            } else if (cmd == "random") {
+
+            } else if (cmd == "sequence") {
+
+            } else if (cmd == "restart") {
+
+            } else if (cmd == "clockwise") {
+                cur->rotate("c");
+                cout << boards << endl;
+            } else if (cmd == "counterclockwise") {
+                cur->rotate("cc");
+                cout << boards << endl;
             }
             else {
-                blockGen(*cur, l2.get(), true);
+                cout << "Invalid Argument!" << endl;
             }
-            cout << boards << endl;
-            if (special) {
-                playerOn = applySpecial();
+
+            if (cur == p1 && !p1On) {
+                if (p1Count == 0) {
+                    cout << "Player 1 has filled up their board :(" << endl;
+                    p1Count++;
+                }
+            } else if (cur == p2 && !p2On) {
+                if (p2Count == 0) {
+                    cout << "Player 2 has filled up their board :(" << endl;
+                    p2Count++;
+                }
             }
+
+            if (!p1On && !p2On) {
+                displayWinner();
+                gameOn = false;
+            } else {
+                cin >> cmd;
+            }
+
+        } else {
             player = !player;
-        } else if (cmd == "levelup") {
-            try {
-                int level = cur->getLevel();
-                if (player == true) {
-                    l1 = p1level.getLevel(level + 1);
-                }
-                else {
-                    l2 = p2level.getLevel(level + 1);
-                }
-                cur->setLevel(level + 1);
-                cout << boards << endl;
-            }
-            catch (error) {}
-        } else if (cmd == "leveldown") {
-            try {
-                int level = cur->getLevel();
-                if (player == true) {
-                    l1 = p1level.getLevel(level - 1);
-                }
-                else {
-                    l2 = p2level.getLevel(level - 1);
-                }
-                cur->setLevel(level - 1);
-                cout << boards << endl;
-            }
-            catch (error) {}
-        } else if (cmd == "I" || cmd == "L" || cmd == "J" || cmd == "O" ||
-                   cmd == "S" || cmd == "Z" || cmd == "T") {
-            playerOn  = cur->replaceCurr(cmd);
-            cout << boards << endl;
-        } else if (cmd == "norandom") {
-            if (cur = p1) {
-                p1level.swapRandom(true, "");
-            }
-            else {
-                p2level.swapRandom(true, "");
-            }
-        } else if (cmd == "random") {
-            string file;
-            cin >> file;
-            if (cur = p1) {
-                p1level.swapRandom(true, file);
-            }
-            else {
-                p2level.swapRandom(true, file);
-            }
-        } else if (cmd == "sequence") {
-
-        } else if (cmd == "restart") {
-
-        } else if (cmd == "clockwise") {
-            cur->rotate("c");
-            cout << boards << endl;
-        } else if (cmd == "counterclockwise") {
-            cur->rotate("cc");
-            cout << boards << endl;
-        }
-        else {
-            cout << "Invalid Argument!" << endl;
         }
     }
 }

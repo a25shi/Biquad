@@ -1,4 +1,5 @@
 #include "controller.h"
+#include <iostream>
 #include <sstream>
 using namespace std;
 
@@ -39,11 +40,32 @@ int main(int argc, char *argv[]) {
         }
         ++count;
     }
-    Board p1;
-    Board p2;
-    p1.setLevel(level);
-    p2.setLevel(level);
-    Controller ct{&p1, &p2};
-    ct.play(in1, in2, level);
+    
+    char cmd;
+    bool continueGame = true;
+    int gameNo = 1;
+    while (true) {
+        if (continueGame) {
+            Board p1;
+            Board p2;
+            p1.setLevel(level);
+            p2.setLevel(level);
+            Controller ct{&p1, &p2};
+            ct.play(in1, in2, level, gameNo);
+        }
+
+        cout << "\nWould you like to play again? (Y / N)" << endl;
+        cin >> cmd;
+        if (cmd == 'N') {
+            continueGame = false;
+            break;
+        } else if (cmd == 'Y') {
+            continueGame = true;
+            gameNo++;
+        } else {
+            continueGame = false;
+            cout << "Invalid command, try again!" << endl;
+        }
+    }
 }
 

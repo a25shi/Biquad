@@ -36,6 +36,25 @@ Board::~Board() {
         grid[y].clear();
     }
     grid.clear();
+
+    for (int x = 0; x < 4; x++) {
+        curr[x].clear();
+        rotationL[x].clear();
+        rotationO[x].clear();
+        rotationS[x].clear();
+        rotationJ[x].clear();
+        rotationT[x].clear();
+        rotationZ[x].clear();
+        rotationI[x].clear();
+    }
+    curr.clear();
+    rotationL.clear();
+    rotationO.clear();
+    rotationS.clear();
+    rotationJ.clear();
+    rotationT.clear();
+    rotationZ.clear();
+    rotationI.clear();
 }
 
 string Board::getVal(int x, int y) const {
@@ -65,7 +84,7 @@ bool Board::move(string dir) {
         newCoord = grid[curr[0][1]][curr[0][0]]->changeCoord(-1, "y");
     }
 
-    if (!(checkMove(newCoord))) {
+    if (!(checkMove(newCoord, true))) {
         return false;
     }
 
@@ -77,7 +96,7 @@ bool Board::move(string dir) {
     return true;
 }
 
-void Board::next() {
+bool Board::next() {
     vector<vector<int>> coord;
     for (int x = 0; x < 4; x++) {
         vector<int> row;
@@ -86,47 +105,54 @@ void Board::next() {
 
     if (nextBlock == "L") {
         coord = {{0, 13}, {1, 13}, {2, 13}, {2, 14}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationL, 0);
         }
     } else if (nextBlock == "J") {
         coord = {{0, 14}, {0, 13}, {1, 13}, {2, 13}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockJ(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationJ, 0);
         }
     } else if (nextBlock == "O") {
         coord = {{0, 14}, {0, 13}, {1, 13}, {1, 14}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationO, 0);
         }
     } else if (nextBlock == "Z") {
         coord = {{0, 14}, {1, 14}, {1, 13}, {2, 13}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockZ(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationZ, 0);
         }
     } else if (nextBlock == "S") {
         coord = {{2, 14}, {1, 14}, {1, 13}, {0, 13}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockS(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationS, 0);
         }
     } else if (nextBlock == "T") {
         coord = {{0, 14}, {1, 14}, {2, 14}, {1, 13}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockT(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationT, 0);
         }
     } else if (nextBlock == "I") {
         coord = {{0, 14}, {1, 14}, {2, 14}, {3, 14}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockI(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationI, 0);
         }
-    } else {
-        cout << "failure" << endl;
     }
 
     for (int i = 0; i < 4; i++) {
         curr[i][0] = coord[i][0];
         curr[i][1] = coord[i][1];
     }
+
+    return true;
 }
 
 vector<int> Board::rowsFull() {
@@ -245,21 +271,25 @@ string Board::getNext() const {
     return nextBlock;
 }
 
-bool Board::checkMove(vector<vector<int>> newCoord) const {
+bool Board::checkMove(vector<vector<int>> newCoord, bool checkCurr) const {
     for (int x = 0; x < 4; x++) {
         if (newCoord[x][0] < 0 || newCoord[x][0] > 10) {
             return false;
         } else if (newCoord[x][1] < 0 || newCoord[x][1] > 17) {
             return false;
         } else if (grid[newCoord[x][1]][newCoord[x][0]]->getType() != ".") {
-            bool blocking = true;
-            for (int y = 0; y < 4; y++) {
-                if (newCoord[x][0] == curr[y][0] && newCoord[x][1] == curr[y][1]) {
-                    blocking = false;
-                    break;
+            if (checkCurr) {
+                bool blocking = true;
+                for (int y = 0; y < 4; y++) {
+                    if (newCoord[x][0] == curr[y][0] && newCoord[x][1] == curr[y][1]) {
+                        blocking = false;
+                        break;
+                    }
                 }
-            }
-            if (blocking) {
+                if (blocking) {
+                    return false;
+                }
+            } else {
                 return false;
             }
         }
@@ -304,7 +334,7 @@ void Board::rotate(string dir) {
         rotatedCoord = grid[curr[0][1]][curr[0][0]]->rotatedCoords("cc");
     }
 
-    if (!(checkMove(rotatedCoord))) {
+    if (!(checkMove(rotatedCoord, true))) {
         grid[curr[0][1]][curr[0][0]]->setStage(oldStage);
         return;
     }
