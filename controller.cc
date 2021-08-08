@@ -60,12 +60,36 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
     out << string(11, '-') << endl;
 
     for (int y = 17; y >= 0; y--) {
+        bool b1Blind = boards[0]->getBlind();
         for (int x = 0; x < 11; x++) {
-            out << boards[0]->getVal(x, y);
+            if (b1Blind) {
+                if (x >= 2 && x <= 8 &&
+                    y >= 2 && y <= 12) {
+                        out << "?";
+                    }
+                else {
+                    out << boards[0]->getVal(x, y);
+                }
+            } else {
+                out << boards[0]->getVal(x, y);
+            }
         }
+
         out << setw(5)  << " ";
+
+        bool b2Blind = boards[1]->getBlind();
         for (int i = 0; i < 11; i++) {
-            out << boards[1]->getVal(i, y);
+            if (b2Blind) {
+                if (i >= 2 && i <= 8 &&
+                    y >= 2 && y <= 12) {
+                        out << "?";
+                    }
+                else {
+                    out << boards[1]->getVal(i, y);
+                }
+            } else {
+                out << boards[1]->getVal(i, y);
+            }
         }
         out << endl;
     }
@@ -97,9 +121,9 @@ bool Controller::applySpecial() {
     cout << "Player ";
     if (player) cout << "1";
     cout << " has gained an advantage. Chose an action from the following: " << endl;
-    cout << "1) 'blind': turns the center of your opponents' board blind for the next turn" << endl;
-    cout << "2) 'heavy': turns your opponents' block heavy for the next turn" << endl;
-    cout << "3) 'force X': where X is a block type, which replaces your opponents current block" << endl;
+    cout << "- 'blind': turns the center of your opponents' board blind for the next turn" << endl;
+    cout << "- 'heavy': turns your opponents' block heavy for the next turn" << endl;
+    cout << "- 'force X': where X is a block type, which replaces your opponents current block" << endl;
     string specialEffect = "";
     cin >> specialEffect;
     bool done = true;
@@ -127,6 +151,7 @@ bool Controller::applySpecial() {
         } else {
             cout << "Invalid command, try again!" << endl;
         }
+        cin >> specialEffect;
     }
 
     cout << boards << endl;
@@ -149,6 +174,8 @@ void Controller::play(string text1, string text2, int init) {
 
     blockGen(*p2, l1.get(), false);
     blockGen(*p2, l1.get(), true);
+
+    cout << boards << endl;
 
     while (cin >> cmd) {
         if (player == true) {
