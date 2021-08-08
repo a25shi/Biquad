@@ -93,7 +93,46 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
     return out;
 }
 
-void Controller::applySpecial()
+bool Controller::applySpecial() {
+    cout << "Player ";
+    if (player) cout << "1";
+    cout << " has gained an advantage. Chose an action from the following: " << endl;
+    cout << "1) 'blind': turns the center of your opponents' board blind for the next turn" << endl;
+    cout << "2) 'heavy': turns your opponents' block heavy for the next turn" << endl;
+    cout << "3) 'force X': where X is a block type, which replaces your opponents current block" << endl;
+    string specialEffect = "";
+    cin >> specialEffect;
+    bool done = true;
+
+    while (true) {
+        if (specialEffect == "blind") {
+            if (player) boards[1]->setBlind(true);
+            else boards[0]->setBlind(true);
+            break;
+        } else if (specialEffect == "heavy") {
+            if (player) boards[1]->setHeavy(true);
+            else boards[0]->setBlind(true);
+            break;
+        } else if (specialEffect == "force") {
+            string shape;
+            cin >> shape;
+            if (shape == "I" || shape == "L" || shape == "J" || shape == "O" ||
+                shape == "S" || shape == "Z" || shape == "T") {
+                    if (player) done = boards[1]->replaceCurr(shape);
+                    else done = boards[0]->replaceCurr(shape);
+                    break;
+            } else {
+                cout << "Invalid shape, try again!" << endl;
+            }
+        } else {
+            cout << "Invalid command, try again!" << endl;
+        }
+    }
+
+    cout << boards << endl;
+
+    return done;
+}
 
 void Controller::play(string text1, string text2, int init) {
     string cmd;
@@ -111,7 +150,6 @@ void Controller::play(string text1, string text2, int init) {
     blockGen(*p2, l1.get(), false);
     blockGen(*p2, l1.get(), true);
 
-    cout << boards << endl;
     while (cin >> cmd) {
         if (player == true) {
             cur = p1;
@@ -119,6 +157,7 @@ void Controller::play(string text1, string text2, int init) {
         else {
             cur = p2;
         }
+        bool playerOn = true;
         if (cmd == "right") {
             cur->move("r");
             bool special = false;
@@ -132,7 +171,7 @@ void Controller::play(string text1, string text2, int init) {
             }
             cout << boards << endl;
             if (special) {
-                applySpecial(boards, player);
+                applySpecial();
             }
         } else if (cmd == "left") {
             cur->move("l");
@@ -147,7 +186,7 @@ void Controller::play(string text1, string text2, int init) {
             }
             cout << boards << endl;
             if (special) {
-                applySpecial(boards, player);
+                applySpecial();
             }
         } else if (cmd == "down") {
             cur->move("d");
@@ -170,7 +209,7 @@ void Controller::play(string text1, string text2, int init) {
             }
             cout << boards << endl;
             if (special) {
-                applySpecial(boards, player);
+                playerOn = applySpecial();
             }
             player = !player;
         } else if (cmd == "levelup") {
@@ -201,7 +240,7 @@ void Controller::play(string text1, string text2, int init) {
             catch (error) {}
         } else if (cmd == "I" || cmd == "L" || cmd == "J" || cmd == "O" ||
                    cmd == "S" || cmd == "Z" || cmd == "T") {
-            bool done = cur->replaceCurr(cmd);
+            playerOn  = cur->replaceCurr(cmd);
             cout << boards << endl;
         } else if (cmd == "norandom") {
 
@@ -212,10 +251,10 @@ void Controller::play(string text1, string text2, int init) {
         } else if (cmd == "restart") {
 
         } else if (cmd == "clockwise") {
-            bool done = cur->rotate("c");
+            cur->rotate("c");
             cout << boards << endl;
         } else if (cmd == "counterclockwise") {
-            bool done = cur->rotate("cc");
+            cur->rotate("cc");
             cout << boards << endl;
         }
         else {
