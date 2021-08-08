@@ -213,6 +213,9 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
     blockGen(*p2, l1.get(), false);
     blockGen(*p2, l1.get(), true);
 
+    ifstream File;
+    bool sequence = false;
+
     cout << boards << endl;
     bool p1On = true;
     bool p2On = true;
@@ -241,7 +244,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 total = 1;
             }
             parse >> cmd;
-            if (cmd == "right") {
+            if (cmd.substr(0,2) == "ri") {
                 for (int i = 0; i < total; i++) {
                     cur->move("r");
                 }
@@ -259,7 +262,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
-            } else if (cmd == "left") {
+            } else if (cmd.substr(0,3) == "lef") {
                 for (int i = 0; i < total; i++) {
                     cur->move("l");
                 }
@@ -277,12 +280,12 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
-            } else if (cmd == "down") {
+            } else if (cmd.substr(0,2) == "do") {
                 for (int i = 0; i < total; i++) {
                     cur->move("d");
                 }
                 cout << boards << endl;
-            } else if (cmd == "drop") {
+            } else if (cmd.substr(0,2) == "dr") {
                 bool special = false;
                 for (int i = 0; i < total; i++) {
                     bool specialtemp = cur->drop();
@@ -309,7 +312,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
                 player = !player;
-            } else if (cmd == "levelup") {
+            } else if (cmd.substr(0,6) == "levelu") {
                 int level = cur->getLevel();
                 try {
                     for (int i = 0; i < total; i++) {
@@ -323,7 +326,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 }
                 catch (error) {}
                 cout << boards << endl;
-            } else if (cmd == "leveldown") {
+            } else if (cmd.substr(0,6) == "leveld") {
                 int level = cur->getLevel();
                 try {
                     for (int i = 0; i < total; i++) {
@@ -342,13 +345,13 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 if (p1 == cur) p1On = cur->replaceCurr(cmd);
                 else p2On = cur->replaceCurr(cmd);
                 cout << boards << endl;
-            } else if (cmd == "norandom") {
+            } else if (cmd.substr(0,5) == "noran") {
                 if (cur = p1) {
                     p1level.swapRandom(true, "");
                 } else {
                     p2level.swapRandom(true, "");
                 }
-            } else if (cmd == "random") {
+            } else if (cmd.substr(0,3) == "ran") {
                 string file;
                 cin >> file;
                 if (cur = p1) {
@@ -356,14 +359,17 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 } else {
                     p2level.swapRandom(true, file);
                 }
-            } else if (cmd == "sequence") {
+            } else if (cmd.substr(0,3) == "seq") {
+                string file;
+                cin >> file;
+                File = ifstream (file);
+                sequence = true;
+            } else if (cmd.substr(0,3) == "res") {
 
-            } else if (cmd == "restart") {
-
-            } else if (cmd == "clockwise") {
+            } else if (cmd.substr(0,2) == "cl") {
                 cur->rotate("c");
                 cout << boards << endl;
-            } else if (cmd == "counterclockwise") {
+            } else if (cmd.substr(0,2) == "co") {
                 cur->rotate("cc");
                 cout << boards << endl;
             } else {
@@ -386,9 +392,16 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 displayWinner();
                 gameOn = false;
             } else {
+                if (sequence) {
+                    if (!(File >> cmd)) {
+                        sequence = false;
+                        cin >> cmd;
+                    }
+                }
+                else {
                 cin >> cmd;
+                }
             }
-
         } else {
             player = !player;
         }
