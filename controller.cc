@@ -270,9 +270,21 @@ void Controller::play(string text1, string text2, int init) {
             playerOn  = cur->replaceCurr(cmd);
             cout << boards << endl;
         } else if (cmd == "norandom") {
-
+            if (cur = p1) {
+                p1level.swapRandom(true, "");
+            }
+            else {
+                p2level.swapRandom(true, "");
+            }
         } else if (cmd == "random") {
-
+            string file;
+            cin >> file;
+            if (cur = p1) {
+                p1level.swapRandom(true, file);
+            }
+            else {
+                p2level.swapRandom(true, file);
+            }
         } else if (cmd == "sequence") {
 
         } else if (cmd == "restart") {
