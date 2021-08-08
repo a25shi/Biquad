@@ -10,4 +10,3 @@ char level0::genBlock() {
     }
     return blocks[index++];
 }
-

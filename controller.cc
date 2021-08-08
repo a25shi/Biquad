@@ -1,6 +1,9 @@
 #include <iomanip>
 #include "controller.h"
 #include "RAIILevel.h"
+#include <sstream>
+#include <fstream>
+
 using namespace std;
 
 Controller::Controller(Board *p1, Board *p2) : p1{p1}, p2{p2}, cur{p1}, player{true} {}
@@ -47,7 +50,7 @@ string getNextString(string type, int row) {
     return "OO";
 }
 
-ostream &operator<<(ostream &out, vector<Board*> boards) {
+ostream &operator<<(ostream &out, vector<Board *> boards) {
     out << endl;
 
     out << " Player 1: ";
@@ -75,9 +78,8 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
             if (b1Blind) {
                 if (x >= 2 && x <= 8 &&
                     y >= 2 && y <= 12) {
-                        out << "?";
-                    }
-                else {
+                    out << "?";
+                } else {
                     out << boards[0]->getVal(x, y);
                 }
             } else {
@@ -85,16 +87,15 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
             }
         }
 
-        out << setw(5)  << " ";
+        out << setw(5) << " ";
 
         bool b2Blind = boards[1]->getBlind();
         for (int i = 0; i < 11; i++) {
             if (b2Blind) {
                 if (i >= 2 && i <= 8 &&
                     y >= 2 && y <= 12) {
-                        out << "?";
-                    }
-                else {
+                    out << "?";
+                } else {
                     out << boards[1]->getVal(i, y);
                 }
             } else {
@@ -103,7 +104,7 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
         }
         out << endl;
     }
-    
+
     out << string(11, '-');
     out << setw(5) << " ";
     out << string(11, '-') << endl;
@@ -121,9 +122,9 @@ ostream &operator<<(ostream &out, vector<Board*> boards) {
 
     out << setw(16) << getNextString(type1, 2);
     out << getNextString(type2, 2) << endl;
-    
+
     string nextType = boards[0]->getNext();
-    
+
     return out;
 }
 
@@ -176,9 +177,9 @@ bool Controller::applySpecial(bool p1On, bool p2On, bool caller) {
                 cin >> shape;
                 if (shape == "I" || shape == "L" || shape == "J" || shape == "O" ||
                     shape == "S" || shape == "Z" || shape == "T") {
-                        if (player) done = boards[1]->replaceCurr(shape);
-                        else done = boards[0]->replaceCurr(shape);
-                        break;
+                    if (player) done = boards[1]->replaceCurr(shape);
+                    else done = boards[0]->replaceCurr(shape);
+                    break;
                 } else {
                     cout << "Invalid shape, try again!" << endl;
                 }
@@ -204,7 +205,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
     shared_ptr<generation> l1 = p1level.getLevel(init);
     shared_ptr<generation> l2 = p2level.getLevel(init);
 
-    vector<Board*> boards = {p1, p2};
+    vector<Board *> boards = {p1, p2};
 
     blockGen(*p1, l1.get(), false);
     blockGen(*p1, l1.get(), true);
@@ -226,14 +227,24 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
     while (gameOn) {
         if (player == true) {
             cur = p1;
-        }
-        else {
+        } else {
             cur = p2;
         }
+
         if ((cur == p2 && p2On) ||
             (cur == p1 && p1On)) {
+
+            istringstream parse{cmd};
+            int total = 1;
+            if (!(parse >> total)) {
+                parse.clear();
+                total = 1;
+            }
+            parse >> cmd;
             if (cmd == "right") {
-                cur->move("r");
+                for (int i = 0; i < total; i++) {
+                    cur->move("r");
+                }
                 bool special = false;
                 if (cur->getHeavy()) {
                     bool move1 = cur->move("d");
@@ -249,7 +260,9 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
             } else if (cmd == "left") {
-                cur->move("l");
+                for (int i = 0; i < total; i++) {
+                    cur->move("l");
+                }
                 bool special = false;
                 if (cur->getHeavy()) {
                     bool move1 = cur->move("d");
@@ -265,23 +278,30 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
             } else if (cmd == "down") {
-                cur->move("d");
+                for (int i = 0; i < total; i++) {
+                    cur->move("d");
+                }
                 cout << boards << endl;
             } else if (cmd == "drop") {
-                bool special = cur->drop();
-                if (cur->getBlind()) {
-                    cur->setBlind(false);
-                }
-                if (cur->getHeavy()) {
-                    if (cur->getLevel() < 3) {
-                        cur->setHeavy(false);
+                bool special = false;
+                for (int i = 0; i < total; i++) {
+                    bool specialtemp = cur->drop();
+                    if (special == false) {
+                        special = specialtemp;
                     }
-                }
-                if (player == true) {
-                    p1On = blockGen(*cur, l1.get(), true);
-                }
-                else {
-                    p2On = blockGen(*cur, l2.get(), true);
+                    if (cur->getBlind()) {
+                        cur->setBlind(false);
+                    }
+                    if (cur->getHeavy()) {
+                        if (cur->getLevel() < 3) {
+                            cur->setHeavy(false);
+                        }
+                    }
+                    if (player == true) {
+                        p1On = blockGen(*cur, l1.get(), true);
+                    } else {
+                        p2On = blockGen(*cur, l2.get(), true);
+                    }
                 }
                 cout << boards << endl;
                 if (special) {
@@ -290,40 +310,52 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 }
                 player = !player;
             } else if (cmd == "levelup") {
+                int level = cur->getLevel();
                 try {
-                    int level = cur->getLevel();
-                    if (player == true) {
-                        l1 = p1level.getLevel(level + 1);
+                    for (int i = 0; i < total; i++) {
+                        if (player == true) {
+                            l1 = p1level.getLevel(level + 1);
+                        } else {
+                            l2 = p2level.getLevel(level + 1);
+                        }
+                        cur->setLevel(level + 1);
                     }
-                    else {
-                        l2 = p2level.getLevel(level + 1);
-                    }
-                    cur->setLevel(level + 1);
-                    cout << boards << endl;
                 }
                 catch (error) {}
+                cout << boards << endl;
             } else if (cmd == "leveldown") {
+                int level = cur->getLevel();
                 try {
-                    int level = cur->getLevel();
-                    if (player == true) {
-                        l1 = p1level.getLevel(level - 1);
+                    for (int i = 0; i < total; i++) {
+                        if (player == true) {
+                            l1 = p1level.getLevel(level - 1);
+                        } else {
+                            l2 = p2level.getLevel(level - 1);
+                        }
+                        cur->setLevel(level - 1);
                     }
-                    else {
-                        l2 = p2level.getLevel(level - 1);
-                    }
-                    cur->setLevel(level - 1);
-                    cout << boards << endl;
                 }
                 catch (error) {}
+                cout << boards << endl;
             } else if (cmd == "I" || cmd == "L" || cmd == "J" || cmd == "O" ||
-                    cmd == "S" || cmd == "Z" || cmd == "T") {
+                       cmd == "S" || cmd == "Z" || cmd == "T") {
                 if (p1 == cur) p1On = cur->replaceCurr(cmd);
                 else p2On = cur->replaceCurr(cmd);
                 cout << boards << endl;
             } else if (cmd == "norandom") {
-
+                if (cur = p1) {
+                    p1level.swapRandom(true, "");
+                } else {
+                    p2level.swapRandom(true, "");
+                }
             } else if (cmd == "random") {
-
+                string file;
+                cin >> file;
+                if (cur = p1) {
+                    p1level.swapRandom(true, file);
+                } else {
+                    p2level.swapRandom(true, file);
+                }
             } else if (cmd == "sequence") {
 
             } else if (cmd == "restart") {
@@ -334,11 +366,11 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
             } else if (cmd == "counterclockwise") {
                 cur->rotate("cc");
                 cout << boards << endl;
+            } else {
+                if (cmd != "") {
+                    cout << "Invalid Argument!" << endl;
+                }
             }
-            else {
-                cout << "Invalid Argument!" << endl;
-            }
-
             if (cur == p1 && !p1On) {
                 if (p1Count == 0) {
                     cout << "Player 1 has filled up their board :(" << endl;
@@ -350,7 +382,6 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     p2Count++;
                 }
             }
-
             if (!p1On && !p2On) {
                 displayWinner();
                 gameOn = false;
@@ -363,3 +394,4 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
         }
     }
 }
+
