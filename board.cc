@@ -1,8 +1,6 @@
 #include "board.h"
 using namespace std;
-void Board::setLevel(int level) {
-    curLevel = level;
-}
+
 Board::Board() {
     for (int y = 0; y < rows; y++) {
         vector<Cell*> cell;
@@ -228,6 +226,13 @@ int Board::getLevel() const {
 
 void Board::setNext(string type) {
     nextBlock = type;
+}
+
+void Board::setLevel(int level) {
+    curLevel = level;
+    if (level >= 3) {
+        this->setHeavy(true);
+    }
 }
 
 string Board::getNext() const {
