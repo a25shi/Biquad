@@ -13,17 +13,18 @@ int main(int argc, char *argv[]) {
   pair <int, int> p2 = {3, 3};
   pair <int, int> p3 = {4, 3};
   pair <int, int> p4 = {5, 3};
-  tg.bc.v.push_back(p1);
-  tg.bc.v.push_back(p2);
-  tg.bc.v.push_back(p3);
-  tg.bc.v.push_back(p4);
+  vector <pair<int, int>> v;
+  v.push_back(p1);
+  v.push_back(p2);
+  v.push_back(p3);
+  v.push_back(p4);
   // the board initializes here 
   tg.player1_init(&w);
   tg.player2_init(&w);
-  tg.display_block(&w, 1, 'S');
-  tg.display_block(&w, 2, 'O');
-  //tg.erase_block(&w, 1);
-  //tg.erase_block(&w, 2);
+  tg.display_block(&w, v, 1, 'S');
+  tg.display_block(&w, v, 2, 'O');
+  //tg.erase_block(&w, v, 1);
+  //tg.erase_block(&w, v, 2);
 
     bool graphic = true;
     int count = 1;
