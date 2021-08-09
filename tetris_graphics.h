@@ -13,7 +13,6 @@ struct BlockCoord {
 };
 
 struct TetrisGraphics {
-    BlockCoord bc;
     int s = 20; // num of pixels per unit
     int board_width = 11;
     int board_height = 18;
@@ -21,8 +20,8 @@ struct TetrisGraphics {
   int y0 = 100;
   int onedrop = 800000;
     public:
-    void display_block (Xwindow *w, int player, char block_type);
-    void erase_block (Xwindow *w, int player);
+    void display_block (Xwindow *w, vector<pair<int, int>> v, int player, char block_type);
+    void erase_block (Xwindow *w, vector<pair<int, int>> v, int player);
     void player1_init (Xwindow *w);
     void player2_init (Xwindow *w);
   
