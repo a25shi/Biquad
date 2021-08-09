@@ -197,7 +197,7 @@ bool Controller::applySpecial(bool p1On, bool p2On, bool caller) {
     return caller;
 }
 
-void Controller::play(string text1, string text2, int init, int gameNo) {
+bool Controller::play(string text1, string text2, int init, int gameNo) {
     string cmd;
 
     RAIILevel p1level{text1};
@@ -365,7 +365,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 File = ifstream (file);
                 sequence = true;
             } else if (cmd.substr(0,3) == "res") {
-
+                return true;
             } else if (cmd.substr(0,2) == "cl") {
                 cur->rotate("c");
                 cout << boards << endl;
@@ -406,5 +406,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
             player = !player;
         }
     }
+
+    return false;
 }
 
