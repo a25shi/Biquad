@@ -210,8 +210,8 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
     blockGen(*p1, l1.get(), false);
     blockGen(*p1, l1.get(), true);
 
-    blockGen(*p2, l1.get(), false);
-    blockGen(*p2, l1.get(), true);
+    blockGen(*p2, l2.get(), false);
+    blockGen(*p2, l2.get(), true);
 
     ifstream File;
     bool sequence = false;
