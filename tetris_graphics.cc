@@ -1,6 +1,6 @@
 #include "tetris_graphics.h"
 
-void TetrisGraphics::display_block(Xwindow *w, int player, char block_type) {
+void TetrisGraphics::display_block(Xwindow *w, vector<pair<int, int>> v, int player, char block_type) {
   int colour = 0;
   if (block_type == 'I') colour = 2; // red
   if (block_type == 'S') colour = 3; // blue
@@ -11,15 +11,15 @@ void TetrisGraphics::display_block(Xwindow *w, int player, char block_type) {
   if (block_type == 'T') colour = 10; // turquoise
     int x_origin = x0 + (player - 1) * s * board_width;
 
-for (auto it = bc.v.begin(); it !=bc.v.end(); ++it) {
+for (auto it = v.begin(); it !=v.end(); ++it) {
  int x = it->first;
  int y = it->second;
 w->fillRectangle(x_origin + x * s, y0 + y * s, s, s, colour);
 }
 }
-void TetrisGraphics::erase_block(Xwindow *w, int player) {
+void TetrisGraphics::erase_block(Xwindow *w, vector<pair<int, int>> v, int player) {
     int x_origin = x0 + (player - 1) * s * board_width;
-for (auto it = bc.v.begin(); it !=bc.v.end(); ++it) {
+for (auto it = v.begin(); it !=v.end(); ++it) {
  int x = it->first;
  int y = it->second;
  if (player == 1) {
