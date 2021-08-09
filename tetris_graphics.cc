@@ -1,33 +1,35 @@
 #include "tetris_graphics.h"
 
-void TetrisGraphics::display_block(Xwindow *w, vector<pair<int, int>> v, int player, char block_type) {
+void TetrisGraphics::display_block(Xwindow *w, vector<vector<int>> v, int player, string block_type) {
   int colour = 0;
-  if (block_type == 'I') colour = 2; // red
-  if (block_type == 'S') colour = 3; // blue
-  if (block_type == 'L') colour = 6; // yellow
-  if (block_type == 'Z') colour = 7; // green
-  if (block_type == 'J') colour = 8; // magenta
-  if (block_type == 'O') colour = 9; // orange
-  if (block_type == 'T') colour = 10; // turquoise
-    int x_origin = x0 + (player - 1) * s * board_width;
+  if (block_type == "I") colour = 2; // red
+  if (block_type == "S") colour = 3; // blue
+  if (block_type == "L") colour = 6; // yellow
+  if (block_type == "Z") colour = 7; // green
+  if (block_type == "J") colour = 8; // magenta
+  if (block_type == "O") colour = 9; // orange
+  if (block_type == "T") colour = 10; // turquoise
+  int x_origin = x0 + (player - 1) * s * board_width;
 
-for (auto it = v.begin(); it !=v.end(); ++it) {
- int x = it->first;
- int y = it->second;
-w->fillRectangle(x_origin + x * s, y0 + y * s, s, s, colour);
+for (int i = 0; i < v.size(); i++) {
+    int x = v[i][0];
+    int y = v[i][1];
+    w->fillRectangle(x_origin + x * s, y0 + y * s, s, s, colour);
+  }
 }
-}
-void TetrisGraphics::erase_block(Xwindow *w, vector<pair<int, int>> v, int player) {
-    int x_origin = x0 + (player - 1) * s * board_width;
-for (auto it = v.begin(); it !=v.end(); ++it) {
- int x = it->first;
- int y = it->second;
- if (player == 1) {
- w->fillRectangle(x_origin + x * s, y0 + y * s, s, s, Xwindow::Wheat);
- } else {
-    w->fillRectangle(x_origin + x * s, y0 + y * s, s, s, Xwindow::Tan); 
- }
-}
+
+void TetrisGraphics::erase_block(Xwindow *w, vector<vector<int>> v, int player) {
+  int x_origin = x0 + (player - 1) * s * board_width;
+
+  for (int i = 0; i < v.size(); i++) {
+    int x = v[i][0];
+    int y = v[i][1];
+    if (player == 1) {
+      w->fillRectangle(x_origin + x * s, y0 + y * s, s, s, Xwindow::Wheat);
+    } else {
+      w->fillRectangle(x_origin + x * s, y0 + y * s, s, s, Xwindow::Tan); 
+    }
+  }
 }
 
 void TetrisGraphics::player1_init (Xwindow *w) {

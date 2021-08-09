@@ -72,6 +72,14 @@ void Board::wipeTemp() {
     }
 }
 
+vector<vector<int>> Board::getCurr() const {
+    return curr;
+}
+
+string Board::getCurrType() const {
+    return grid[curr[0][1]][curr[0][0]]->getType();
+}
+
 bool Board::move(string dir) {
     string type = grid[curr[0][1]][curr[0][0]]->getType();
 

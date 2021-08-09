@@ -200,12 +200,15 @@ bool Controller::applySpecial(bool p1On, bool p2On, bool caller) {
 void Controller::play(string text1, string text2, int init, int gameNo) {
     string cmd;
 
+    Xwindow w;
+    TetrisGraphics tg;
+
     RAIILevel p1level{text1};
     RAIILevel p2level{text2};
     shared_ptr<generation> l1 = p1level.getLevel(init);
     shared_ptr<generation> l2 = p2level.getLevel(init);
 
-    vector<Board *> boards = {p1, p2};
+    vector<Board*> boards = {p1, p2};
 
     blockGen(*p1, l1.get(), false);
     blockGen(*p1, l1.get(), true);
@@ -236,6 +239,14 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
 
         if ((cur == p2 && p2On) ||
             (cur == p1 && p1On)) {
+            tg.player1_init(&w);
+            tg.player2_init(&w);
+
+            vector<vector<int>> curr = cur->getCurr();
+            string curType = cur->getCurrType();
+
+            if (cur == p1) tg.display_block(&w, curr, 1, curType);
+            else tg.display_block(&w, curr, 2, curType);
 
             istringstream parse{cmd};
             int total = 1;

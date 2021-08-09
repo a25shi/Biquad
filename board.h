@@ -12,6 +12,9 @@
 #include "blockZ.h"
 #include "blockS.h"
 #include "blockT.h"
+#include "tetris_graphics.h"
+#include "window.h"
+
 using namespace std;
 
 class Board {
@@ -60,6 +63,8 @@ public:
     void setHeavy(bool state);
     bool replaceCurr(string type);
     string getNext() const;
+    vector<vector<int>> getCurr() const;
+    string getCurrType() const;
     void rotate(string dir);
 };
 

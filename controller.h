@@ -1,6 +1,7 @@
 #ifndef _PROJECTFILES_CONTROLLER_H
 #define _PROJECTFILES_CONTROLLER_H
 #include "board.h"
+#include "window.h"
 
 class Controller {
     Board* p1;
