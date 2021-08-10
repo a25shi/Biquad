@@ -280,7 +280,7 @@ bool Controller::play(string text1, string text2, int init, int gameNo) {
                     if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
-            } else if (cmd.substr(0,2) == "do") {
+            } else if (cmd.substr(0,3) == "dow") {
                 for (int i = 0; i < total; i++) {
                     cur->move("d");
                 }
