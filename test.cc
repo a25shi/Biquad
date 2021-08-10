@@ -3,6 +3,10 @@
 #include <sstream>
 using namespace std;
 
+const int ASK = 1;
+const int START_NEW = 0;
+const int QUIT = -1;
+
 int main(int argc, char *argv[]) {
     bool graphic = true;
     int count = 1;
@@ -45,17 +49,17 @@ int main(int argc, char *argv[]) {
     bool continueGame = true;
     int gameNo = 1;
     while (true) {
-        bool restartGame = false;
-        if (continueGame || restartGame) {
+        int restartGame = START_NEW;
+        if (continueGame || (restartGame == START_NEW)) {
             Board p1;
             Board p2;
             p1.setLevel(level);
             p2.setLevel(level);
             Controller ct{&p1, &p2};
-            ct.play(in1, in2, level, gameNo);
+            restartGame = ct.play(in1, in2, level, gameNo);
         }
 
-        if (!restartGame) {
+        if (restartGame == ASK) {
             cout << "\nWould you like to play again? (Y / N)" << endl;
             cin >> cmd;
             if (cmd == 'N') {
@@ -68,6 +72,10 @@ int main(int argc, char *argv[]) {
                 continueGame = false;
                 cout << "Invalid command, try again!" << endl;
             }
+        } 
+    
+        if (restartGame == QUIT) {
+            break;
         }
     }
 }

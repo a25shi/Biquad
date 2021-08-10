@@ -83,7 +83,9 @@ ostream &operator<<(ostream &out, vector<Board *> boards) {
                     out << boards[0]->getVal(x, y);
                 }
             } else {
+                //out << "here maybe" << endl;
                 out << boards[0]->getVal(x, y);
+                //out << "lets see" << endl;
             }
         }
 
@@ -197,24 +199,21 @@ bool Controller::applySpecial(bool p1On, bool p2On, bool caller) {
     return caller;
 }
 
-void Controller::play(string text1, string text2, int init, int gameNo) {
+int Controller::play(string text1, string text2, int init, int gameNo) {
     string cmd;
-
-    Xwindow w;
-    TetrisGraphics tg;
 
     RAIILevel p1level{text1};
     RAIILevel p2level{text2};
     shared_ptr<generation> l1 = p1level.getLevel(init);
     shared_ptr<generation> l2 = p2level.getLevel(init);
 
-    vector<Board*> boards = {p1, p2};
+    vector<Board *> boards = {p1, p2};
 
     blockGen(*p1, l1.get(), false);
     blockGen(*p1, l1.get(), true);
 
-    blockGen(*p2, l1.get(), false);
-    blockGen(*p2, l1.get(), true);
+    blockGen(*p2, l2.get(), false);
+    blockGen(*p2, l2.get(), true);
 
     ifstream File;
     bool sequence = false;
@@ -239,14 +238,6 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
 
         if ((cur == p2 && p2On) ||
             (cur == p1 && p1On)) {
-            tg.player1_init(&w);
-            tg.player2_init(&w);
-
-            vector<vector<int>> curr = cur->getCurr();
-            string curType = cur->getCurrType();
-
-            if (cur == p1) tg.display_block(&w, curr, 1, curType);
-            else tg.display_block(&w, curr, 2, curType);
 
             istringstream parse{cmd};
             int total = 1;
@@ -259,6 +250,9 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 for (int i = 0; i < total; i++) {
                     cur->move("r");
                 }
+                if (cur->getLevel() == 3 || cur->getLevel() == 4) {
+                    cur->move("d");
+                }
                 bool special = false;
                 if (cur->getHeavy()) {
                     bool move1 = cur->move("d");
@@ -266,6 +260,12 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     if (!(move1 && move2)) {
                         special = cur->drop();
                         cur->setHeavy(false);
+                        if (player == true) {
+                            p1On = blockGen(*cur, l1.get(), true);
+                        } else {
+                            p2On = blockGen(*cur, l2.get(), true);
+                        }
+                        player = !player;
                     }
                 }
                 cout << boards << endl;
@@ -277,6 +277,9 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 for (int i = 0; i < total; i++) {
                     cur->move("l");
                 }
+                if (cur->getLevel() == 3 || cur->getLevel() == 4) {
+                    cur->move("d");
+                }
                 bool special = false;
                 if (cur->getHeavy()) {
                     bool move1 = cur->move("d");
@@ -284,6 +287,12 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     if (!(move1 && move2)) {
                         special = cur->drop();
                         cur->setHeavy(false);
+                        if (player == true) {
+                            p1On = blockGen(*cur, l1.get(), true);
+                        } else {
+                            p2On = blockGen(*cur, l2.get(), true);
+                        }
+                        player = !player;
                     }
                 }
                 cout << boards << endl;
@@ -293,6 +302,9 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 }
             } else if (cmd.substr(0,2) == "do") {
                 for (int i = 0; i < total; i++) {
+                    cur->move("d");
+                }
+                if (cur->getLevel() == 3 || cur->getLevel() == 4) {
                     cur->move("d");
                 }
                 cout << boards << endl;
@@ -307,9 +319,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                         cur->setBlind(false);
                     }
                     if (cur->getHeavy()) {
-                        if (cur->getLevel() < 3) {
-                            cur->setHeavy(false);
-                        }
+                        cur->setHeavy(false);
                     }
                     if (player == true) {
                         p1On = blockGen(*cur, l1.get(), true);
@@ -357,7 +367,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 else p2On = cur->replaceCurr(cmd);
                 cout << boards << endl;
             } else if (cmd.substr(0,5) == "noran") {
-                if (cur = p1) {
+                if (cur == p1) {
                     p1level.swapRandom(true, "");
                 } else {
                     p2level.swapRandom(true, "");
@@ -365,7 +375,7 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
             } else if (cmd.substr(0,3) == "ran") {
                 string file;
                 cin >> file;
-                if (cur = p1) {
+                if (cur == p1) {
                     p1level.swapRandom(true, file);
                 } else {
                     p2level.swapRandom(true, file);
@@ -376,13 +386,21 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                 File = ifstream (file);
                 sequence = true;
             } else if (cmd.substr(0,3) == "res") {
-
+                return 0;
             } else if (cmd.substr(0,2) == "cl") {
                 cur->rotate("c");
+                if (cur->getLevel() == 3 || cur->getLevel() == 4) {
+                    cur->move("d");
+                }
                 cout << boards << endl;
             } else if (cmd.substr(0,2) == "co") {
                 cur->rotate("cc");
+                if (cur->getLevel() == 3 || cur->getLevel() == 4) {
+                    cur->move("d");
+                }
                 cout << boards << endl;
+            } else if (cmd == "quit") {
+                return -1;
             } else {
                 if (cmd != "") {
                     cout << "Invalid Argument!" << endl;
@@ -410,12 +428,14 @@ void Controller::play(string text1, string text2, int init, int gameNo) {
                     }
                 }
                 else {
-                cin >> cmd;
+                    cin >> cmd;
                 }
             }
         } else {
             player = !player;
         }
     }
+
+    return 1;
 }
 

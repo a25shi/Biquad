@@ -12,7 +12,7 @@ class Controller {
 public:
     Controller(Board* p1, Board* p2);
     ~Controller();
-    bool play(string text1, string text2, int init, int gameNo);
+    int play(string text1, string text2, int init, int gameNo);
     void displayWinner();
 };
 

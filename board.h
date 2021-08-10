@@ -12,6 +12,7 @@
 #include "blockZ.h"
 #include "blockS.h"
 #include "blockT.h"
+#include "starBlock.h"
 using namespace std;
 
 class Board {
@@ -36,12 +37,14 @@ class Board {
     vector<vector<int>> curr;
 
     vector<int> rowsFull();
+    int noDrops = 0;
     bool checkSpecial(int rows);
     void removeRow(int rowNum);
     void wipeTemp();
     void reset();
     void resetCurr(vector<vector<int>> newCoord, string type, int genLevel, int stage);
     bool checkMove(vector<vector<int>> newCoord, bool checkCurr) const;
+    void dropMiddle();
 
 public:
     Board();
@@ -60,6 +63,8 @@ public:
     void setHeavy(bool state);
     bool replaceCurr(string type);
     string getNext() const;
+    vector<vector<int>> getCurr() const;
+    string getCurrType() const;
     void rotate(string dir);
 };
 

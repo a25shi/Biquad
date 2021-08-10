@@ -58,7 +58,7 @@ Board::~Board() {
 }
 
 string Board::getVal(int x, int y) const {
-    return grid.at(y).at(x)->getType();
+    return grid[y][x]->getType();
 }
 
 bool Board::getBlind() const {
@@ -71,6 +71,15 @@ void Board::wipeTemp() {
         grid[curr[x][1]][curr[x][0]] = new Basecell{};
     }
 }
+
+vector<vector<int>> Board::getCurr() const {
+    return curr;
+}
+
+string Board::getCurrType() const {
+    return grid[curr[0][1]][curr[0][0]]->getType();
+}
+
 
 bool Board::move(string dir) {
     string type = grid[curr[0][1]][curr[0][0]]->getType();
@@ -105,46 +114,41 @@ bool Board::next() {
 
     if (nextBlock == "L") {
         coord = {{0, 13}, {1, 13}, {2, 13}, {2, 14}};
-        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationL, 0);
         }
     } else if (nextBlock == "J") {
         coord = {{0, 14}, {0, 13}, {1, 13}, {2, 13}};
-        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockJ(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationJ, 0);
         }
     } else if (nextBlock == "O") {
         coord = {{0, 14}, {0, 13}, {1, 13}, {1, 14}};
-        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationO, 0);
         }
     } else if (nextBlock == "Z") {
         coord = {{0, 14}, {1, 14}, {1, 13}, {2, 13}};
-        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockZ(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationZ, 0);
         }
     } else if (nextBlock == "S") {
         coord = {{2, 14}, {1, 14}, {1, 13}, {0, 13}};
-        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockS(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationS, 0);
         }
     } else if (nextBlock == "T") {
         coord = {{0, 14}, {1, 14}, {2, 14}, {1, 13}};
-        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockT(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationT, 0);
         }
     } else if (nextBlock == "I") {
         coord = {{0, 14}, {1, 14}, {2, 14}, {3, 14}};
-        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockI(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationI, 0);
         }
+    } else {
+        cout << "failure" << endl;
     }
 
     for (int i = 0; i < 4; i++) {
@@ -245,7 +249,31 @@ bool Board::drop() {
         return true;
     }
 
+    if (curLevel == 4) {
+        if (emptyRow.size() == 0) noDrops++;
+        else noDrops = 0;
+        if (noDrops == 5) {
+            dropMiddle();
+            noDrops = 0;
+        }
+    }
+
     return false;
+}
+
+void Board::dropMiddle() {
+    int lowest = 18;
+    for (int x = 17; x >= 0; x--) {
+        if (grid[x][5]->getType() == ".") {
+            lowest = x;
+        } else {
+            break;
+        }
+    }
+    if (lowest != 18) {
+        delete grid[lowest][5];
+        grid[lowest][5] = new StarBlock{curLevel};
+    }
 }
 
 int Board::getScore() const {
@@ -262,9 +290,6 @@ void Board::setNext(string type) {
 
 void Board::setLevel(int level) {
     curLevel = level;
-    if (level >= 3) {
-        this->setHeavy(true);
-    }
 }
 
 string Board::getNext() const {
