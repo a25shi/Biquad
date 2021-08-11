@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-std=c++14
-OBJECTS=test.o board.o decorator.o basecell.o cell.o block.o blockL.o blockO.o blockI.o blockS.o blockZ.o blockT.o blockJ.o generation.o level0.o level1.o level2.o level3.o level4.o RAIILevel.o controller.o
+OBJECTS=test.o board.o decorator.o basecell.o cell.o block.o blockL.o blockO.o blockI.o blockS.o blockZ.o blockT.o blockJ.o generation.o level0.o level1.o level2.o level3.o level4.o RAIILevel.o controller.o starBlock.o
 EXEC=test
 
 ${EXEC}: ${OBJECTS}
@@ -27,3 +27,4 @@ level3.o: level3.cc level3.h
 level4.o: level4.cc level4.h
 RAIILevel.o: RAIILevel.cc RAIILevel.h
 controller.o: controller.cc controller.h
+starBlock.o: starBlock.cc starBlock.h
