@@ -7,11 +7,6 @@
 
 using namespace std;
 
-struct BlockCoord {
-    vector<pair<int, int>> v;
-    
-};
-
 struct TetrisGraphics {
     int s = 20; // num of pixels per unit
     int board_width = 11;

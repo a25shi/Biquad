@@ -1,31 +1,9 @@
 #include "controller.h"
 #include <iostream>
 #include <sstream>
-#include "tetris_graphics.h"
-#include "window.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
-    Xwindow w;
-    TetrisGraphics tg;
- // the following are dummy coordinates for testing purposes
-  pair <int, int> p1 = {2, 3};
-  pair <int, int> p2 = {3, 3};
-  pair <int, int> p3 = {4, 3};
-  pair <int, int> p4 = {5, 3};
-  vector <pair<int, int>> v;
-  v.push_back(p1);
-  v.push_back(p2);
-  v.push_back(p3);
-  v.push_back(p4);
-  // the board initializes here 
-  tg.player1_init(&w);
-  tg.player2_init(&w);
-  tg.display_block(&w, v, 1, 'S');
-  tg.display_block(&w, v, 2, 'O');
-  //tg.erase_block(&w, v, 1);
-  //tg.erase_block(&w, v, 2);
-
     bool graphic = true;
     int count = 1;
     int level = 0;
