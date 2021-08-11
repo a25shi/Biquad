@@ -8,8 +8,9 @@ class StarBlock : public Cell {
     string type;
     bool temp;
     int level;
+    vector<vector<int>> coord;
     public:
-        StarBlock(int level);
+        StarBlock(int level, vector<vector<int>> coord);
         string getType() const override;
         bool isTemp() const override;
         void setTemp(bool state) override;

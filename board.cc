@@ -114,41 +114,46 @@ bool Board::next() {
 
     if (nextBlock == "L") {
         coord = {{0, 13}, {1, 13}, {2, 13}, {2, 14}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockL(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationL, 0);
         }
     } else if (nextBlock == "J") {
         coord = {{0, 14}, {0, 13}, {1, 13}, {2, 13}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockJ(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationJ, 0);
         }
     } else if (nextBlock == "O") {
         coord = {{0, 14}, {0, 13}, {1, 13}, {1, 14}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockO(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationO, 0);
         }
     } else if (nextBlock == "Z") {
         coord = {{0, 14}, {1, 14}, {1, 13}, {2, 13}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockZ(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationZ, 0);
         }
     } else if (nextBlock == "S") {
         coord = {{2, 14}, {1, 14}, {1, 13}, {0, 13}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockS(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationS, 0);
         }
     } else if (nextBlock == "T") {
         coord = {{0, 14}, {1, 14}, {2, 14}, {1, 13}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockT(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationT, 0);
         }
     } else if (nextBlock == "I") {
         coord = {{0, 14}, {1, 14}, {2, 14}, {3, 14}};
+        if (!(checkMove(coord, false))) return false;
         for (int i = 0; i < 4; i++) {
             grid[coord[i][1]][coord[i][0]] = new BlockI(grid[coord[i][1]][coord[i][0]], coord, curLevel, rotationI, 0);
         }
-    } else {
-        cout << "failure" << endl;
     }
 
     for (int i = 0; i < 4; i++) {
@@ -164,6 +169,7 @@ vector<int> Board::rowsFull() {
     for (int y = 0; y < rows; y++) {
         bool rowFull = true;
         for (int x = 0; x < cols; x++) {
+            //cout << "grid[" << x << "," << y << "]: " << grid[y][x]->getType() << endl; 
             if (grid[y][x]->getType() == ".") {
                 rowFull = false;
                 break;
@@ -205,12 +211,17 @@ void Board::resetCurr(vector<vector<int>> newCoord, string type, int genLevel, i
 void Board::removeRow(int rowNum) {
     for (int x = 0; x < cols; x++) {
         vector<vector<int>> allCoord = grid[rowNum][x]->getCoord();
-        for (int m = 0; m < 4; m++) {
-            if (!(allCoord[m][1] == -1 && allCoord[m][0] == -1)) {
-                grid[allCoord[m][1]][allCoord[m][0]]->removeCoord(x, rowNum);
+        if (grid[rowNum][x]->getType() == "*") {
+            grid[rowNum][x]->removeCoord(x, rowNum);
+        } else {
+            for (int m = 0; m < 4; m++) {
+                if (!(allCoord[m][1] == -1 && allCoord[m][0] == -1)) {
+                    grid[allCoord[m][1]][allCoord[m][0]]->removeCoord(x, rowNum);
+                }
             }
         }
-        int coordsLeft = grid[rowNum][x]->getActiveCoord();
+        int coordsLeft = 0;
+        if (grid[rowNum][x]->getType() != "*") coordsLeft = grid[rowNum][x]->getActiveCoord();
         if (coordsLeft == 0) {
             int genLevel = grid[rowNum][x]->getLevel();
             int points = (genLevel + 1) * (genLevel + 1);
@@ -245,17 +256,27 @@ bool Board::drop() {
         score += points;
     }
 
-    if (emptyRow.size() >= 2) {
-        return true;
-    }
-
     if (curLevel == 4) {
         if (emptyRow.size() == 0) noDrops++;
         else noDrops = 0;
         if (noDrops == 5) {
             dropMiddle();
             noDrops = 0;
+            
+            emptyRow = rowsFull();
+            for (int i = emptyRow.size() - 1; i >= 0; i--) {
+                removeRow(emptyRow.at(i));
+            }
+
+            if (emptyRow.size() != 0) {
+                int points = (curLevel + emptyRow.size()) * (curLevel + emptyRow.size());
+                score += points;
+            }
         }
+    }
+
+    if (emptyRow.size() >= 2) {
+        return true;
     }
 
     return false;
@@ -272,7 +293,12 @@ void Board::dropMiddle() {
     }
     if (lowest != 18) {
         delete grid[lowest][5];
-        grid[lowest][5] = new StarBlock{curLevel};
+
+        vector<vector<int>> pos;
+        vector<int> row = {5, lowest};
+        pos.emplace_back(row);
+
+        grid[lowest][5] = new StarBlock{curLevel, pos};
     }
 }
 
