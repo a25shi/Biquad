@@ -172,7 +172,7 @@ bool Controller::applySpecial(bool p1On, bool p2On, bool caller) {
                 break;
             } else if (specialEffect == "heavy") {
                 if (player) boards[1]->setHeavy(true);
-                else boards[0]->setBlind(true);
+                else boards[0]->setHeavy(true);
                 break;
             } else if (specialEffect == "force") {
                 string shape;
@@ -429,11 +429,13 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                 }
                 else {
                     cin >> cmd;
-                }
+                } 
             }
         } else {
             player = !player;
         }
+
+        
     }
 
     return 1;
