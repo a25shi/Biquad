@@ -526,7 +526,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     }
                 }
 
-                cur->rotate("c");
+                for (int i = 0; i < total; i++) {
+                    cur->rotate("c");
+                }
+
                 if (cur->getLevel() == 3 || cur->getLevel() == 4) {
                     cur->move("d");
                 }
@@ -550,7 +553,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     }
                 }
 
-                cur->rotate("cc");
+                for (int i = 0; i < total; i++) {
+                    cur->rotate("cc");
+                }
+
                 if (cur->getLevel() == 3 || cur->getLevel() == 4) {
                     cur->move("d");
                 }
@@ -600,4 +606,3 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
     }
     return 1;
 }
-
