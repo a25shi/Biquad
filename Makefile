@@ -1,10 +1,10 @@
 CXX=g++
-CXXFLAGS=-std=c++14
-OBJECTS=test.o board.o block.o generation.o level0.o level1.o level2.o level3.o level4.o RAIILevel.o controller.o
+CXXFLAGS=-std=c++14 -MMD -lX11 
+OBJECTS= controller.o test.o board.o block.o generation.o level0.o level1.o level2.o level3.o level4.o RAIILevel.o tetris_graphics.o window.o 
 EXEC=test
 
 ${EXEC}: ${OBJECTS}
-	${CXX} ${OBJECTS} -g -o ${EXEC}
+	${CXX} ${OBJECTS} -g -lX11 -o ${EXEC} 
 
 test.o: test.cc
 board.o: board.cc board.h
@@ -17,3 +17,5 @@ level3.o: level3.cc level3.h
 level4.o: level4.cc level4.h
 RAIILevel.o: RAIILevel.cc RAIILevel.h
 controller.o: controller.cc controller.h
+window.o: window.cc window.h
+tetris_graphics.o: tetris_graphics.cc tetris_graphics.h
