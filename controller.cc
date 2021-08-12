@@ -567,7 +567,6 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
 
         
     }
-
     return 1;
 }
 
