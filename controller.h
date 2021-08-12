@@ -1,6 +1,7 @@
 #ifndef _PROJECTFILES_CONTROLLER_H
 #define _PROJECTFILES_CONTROLLER_H
 #include "board.h"
+#include "window.h"
 
 class Controller {
     Board* p1;
@@ -12,7 +13,7 @@ class Controller {
 public:
     Controller(Board* p1, Board* p2);
     ~Controller();
-    int play(string text1, string text2, int init, int gameNo);
+    void play(string text1, string text2, int init, int gameNo);
     void displayWinner();
 };
 

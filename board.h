@@ -3,7 +3,8 @@
 #include <vector>
 #include <iostream>
 #include <string>
-#include "block.h"
+#include "tetris_graphics.h"
+#include "window.h"
 
 using namespace std;
 
