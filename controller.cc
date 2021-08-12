@@ -199,7 +199,7 @@ bool Controller::applySpecial(bool p1On, bool p2On, bool caller) {
     return caller;
 }
 
-int Controller::play(string text1, string text2, int init, int gameNo) {
+int Controller::play(string text1, string text2, int init, int gameNo, bool graphics) {
     string cmd;
 
     RAIILevel p1level{text1};
@@ -233,20 +233,21 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
     Xwindow w;
     TetrisGraphics tg;
 
-    tg.player1_init(&w);
-    tg.player2_init(&w);
-
-    string p1type = p1->getCurrType();
-    string p2type = p1->getCurrType();
-    vector<vector<int>> p1init = p1->getCurr();
-    vector<vector<int>> p2init = p2->getCurr();
-
-    tg.display_block(&w, p1init, 1, p1type);
-    tg.display_block(&w, p2init, 1, p2type);
-
     vector<vector<int>> p1OldCurr = p1->getCurr();
     vector<vector<int>> p2OldCurr = p2->getCurr();
 
+    if (graphics) {
+        tg.player1_init(&w);
+        tg.player2_init(&w);
+
+        string p1type = p1->getCurrType();
+        string p2type = p2->getCurrType();
+        vector<vector<int>> p1init = p1->getCurr();
+        vector<vector<int>> p2init = p2->getCurr();
+
+        tg.display_block(&w, p1init, 1, p1type);
+        tg.display_block(&w, p2init, 2, p2type);
+    }
 
     while (gameOn) {
         if (player == true) {
@@ -267,13 +268,15 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
             parse >> cmd;
             if (cmd.substr(0,2) == "ri") {
                 int curPlayer = 1;
-                if (p2 == cur) {
-                    curPlayer = 2;
-                    p2OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p2OldCurr, curPlayer);
-                } else {
-                    p1OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p1OldCurr, curPlayer);
+                if (graphics) {
+                    if (p2 == cur) {
+                        curPlayer = 2;
+                        p2OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                    } else {
+                        p1OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                    }
                 }
 
                 for (int i = 0; i < total; i++) {
@@ -299,10 +302,11 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                 }
                 cout << boards << endl;
 
-
-                vector<vector<int>> curPos = cur->getCurr();
-                string curType = cur->getCurrType();
-                tg.display_block(&w, curPos, curPlayer, curType);
+                if (graphics) {
+                    vector<vector<int>> curPos = cur->getCurr();
+                    string curType = cur->getCurrType();
+                    tg.display_block(&w, curPos, curPlayer, curType);
+                }
 
                 if (special) {
                     if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
@@ -310,13 +314,15 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                 }
             } else if (cmd.substr(0,3) == "lef") {
                 int curPlayer = 1;
-                if (p2 == cur) {
-                    curPlayer = 2;
-                    p2OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p2OldCurr, curPlayer);
-                } else {
-                    p1OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p1OldCurr, curPlayer);
+                if (graphics) {
+                    if (p2 == cur) {
+                        curPlayer = 2;
+                        p2OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                    } else {
+                        p1OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                    }
                 }
                 for (int i = 0; i < total; i++) {
                     cur->move("l");
@@ -341,10 +347,11 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                 }
                 cout << boards << endl;
 
-
-                vector<vector<int>> curPos = cur->getCurr();
-                string curType = cur->getCurrType();
-                tg.display_block(&w, curPos, curPlayer, curType);
+                if (graphics) {
+                    vector<vector<int>> curPos = cur->getCurr();
+                    string curType = cur->getCurrType();
+                    tg.display_block(&w, curPos, curPlayer, curType);
+                }
 
                 if (special) {
                     if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
@@ -352,13 +359,15 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                 }
             } else if (cmd.substr(0,2) == "do") {
                 int curPlayer = 1;
-                if (p2 == cur) {
-                    curPlayer = 2;
-                    p2OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p2OldCurr, curPlayer);
-                } else {
-                    p1OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p1OldCurr, curPlayer);
+                if (graphics) {
+                    if (p2 == cur) {
+                        curPlayer = 2;
+                        p2OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                    } else {
+                        p1OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                    }
                 }
 
                 for (int i = 0; i < total; i++) {
@@ -370,20 +379,23 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
 
                 cout << boards << endl;
 
-                vector<vector<int>> curPos = cur->getCurr();
-                string curType = cur->getCurrType();
-                tg.display_block(&w, curPos, curPlayer, curType);
-
+                if (graphics) {
+                    vector<vector<int>> curPos = cur->getCurr();
+                    string curType = cur->getCurrType();
+                    tg.display_block(&w, curPos, curPlayer, curType);
+                }
 
             } else if (cmd.substr(0,2) == "dr") {
                 int curPlayer = 1;
-                if (p2 == cur) {
-                    curPlayer = 2;
-                    p2OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p2OldCurr, curPlayer);
-                } else {
-                    p1OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p1OldCurr, curPlayer);
+                if (graphics) {
+                    if (p2 == cur) {
+                        curPlayer = 2;
+                        p2OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                    } else {
+                        p1OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                    }
                 }
                 bool special = false;
                 for (int i = 0; i < total; i++) {
@@ -398,9 +410,11 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                         cur->setHeavy(false);
                     }
 
-                    vector<vector<int>> curPos = cur->getCurr();
-                    string curType = cur->getCurrType();
-                    tg.display_block(&w, curPos, curPlayer, curType);
+                    if (graphics) {
+                        vector<vector<int>> curPos = cur->getCurr();
+                        string curType = cur->getCurrType();
+                        tg.display_block(&w, curPos, curPlayer, curType);
+                    }
 
                     if (player == true) {
                         p1On = blockGen(*cur, l1.get(), true);
@@ -410,9 +424,12 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                 }
                 cout << boards << endl;
 
-                vector<vector<int>> curPos = cur->getCurr();
-                string curType = cur->getCurrType();
-                tg.display_block(&w, curPos, curPlayer, curType);
+                if (graphics) {
+                    vector<vector<int>> curPos = cur->getCurr();
+                    string curType = cur->getCurrType();
+                    tg.display_block(&w, curPos, curPlayer, curType);
+                }
+
                 if (special) {
                     if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
                     else p2On = applySpecial(p1On, p2On, p2On);
@@ -450,23 +467,27 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                        cmd == "S" || cmd == "Z" || cmd == "T") {
 
                 int curPlayer = 1;
-                if (p2 == cur) {
-                    curPlayer = 2;
-                    p2OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p2OldCurr, curPlayer);
-                    p2On = cur->replaceCurr(cmd);
-                } else {
-                    p1OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p1OldCurr, curPlayer);
-                    p1On = cur->replaceCurr(cmd);
+                if (graphics) {
+                    if (p2 == cur) {
+                        curPlayer = 2;
+                        p2OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                    } else {
+                        p1OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                    }
                 }
 
+                if (p2 == cur) p2On = cur->replaceCurr(cmd);
+                else p1On = cur->replaceCurr(cmd);
 
                 cout << boards << endl;
 
-                vector<vector<int>> curPos = cur->getCurr();
-                string curType = cur->getCurrType();
-                tg.display_block(&w, curPos, curPlayer, curType);
+                if (graphics) {
+                    vector<vector<int>> curPos = cur->getCurr();
+                    string curType = cur->getCurrType();
+                    tg.display_block(&w, curPos, curPlayer, curType);
+                }
 
             } else if (cmd.substr(0,5) == "noran") {
                 if (cur == p1) {
@@ -491,13 +512,15 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                 return 0;
             } else if (cmd.substr(0,2) == "cl") {
                 int curPlayer = 1;
-                if (p2 == cur) {
-                    curPlayer = 2;
-                    p2OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p2OldCurr, curPlayer);
-                } else {
-                    p1OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p1OldCurr, curPlayer);
+                if (graphics) {
+                    if (p2 == cur) {
+                        curPlayer = 2;
+                        p2OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                    } else {
+                        p1OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                    }
                 }
 
                 cur->rotate("c");
@@ -506,19 +529,24 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
                 }
                 cout << boards << endl;
 
-                vector<vector<int>> curPos = cur->getCurr();
-                string curType = cur->getCurrType();
-                tg.display_block(&w, curPos, curPlayer, curType);
+                if (graphics) {
+                    vector<vector<int>> curPos = cur->getCurr();
+                    string curType = cur->getCurrType();
+                    tg.display_block(&w, curPos, curPlayer, curType);
+                }
             } else if (cmd.substr(0,2) == "co") {
                 int curPlayer = 1;
-                if (p2 == cur) {
-                    curPlayer = 2;
-                    p2OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p2OldCurr, curPlayer);
-                } else {
-                    p1OldCurr = cur->getCurr();
-                    tg.erase_block(&w, p1OldCurr, curPlayer);
+                if (graphics) {
+                    if (p2 == cur) {
+                        curPlayer = 2;
+                        p2OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                    } else {
+                        p1OldCurr = cur->getCurr();
+                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                    }
                 }
+
                 cur->rotate("cc");
                 if (cur->getLevel() == 3 || cur->getLevel() == 4) {
                     cur->move("d");
@@ -526,9 +554,11 @@ int Controller::play(string text1, string text2, int init, int gameNo) {
 
                 cout << boards << endl;
 
-                vector<vector<int>> curPos = cur->getCurr();
-                string curType = cur->getCurrType();
-                tg.display_block(&w, curPos, curPlayer, curType);
+                if (graphics) {
+                    vector<vector<int>> curPos = cur->getCurr();
+                    string curType = cur->getCurrType();
+                    tg.display_block(&w, curPos, curPlayer, curType);
+                }
             } else if (cmd == "quit") {
                 return -1;
             } else {

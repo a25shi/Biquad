@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
             p1.setLevel(level);
             p2.setLevel(level);
             Controller ct{&p1, &p2};
-            restartGame = ct.play(in1, in2, level, gameNo);
+            restartGame = ct.play(in1, in2, level, gameNo, graphic);
         }
 
         if (restartGame == ASK) {

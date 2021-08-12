@@ -2,6 +2,7 @@
 #define _PROJECTFILES_CONTROLLER_H
 #include "board.h"
 #include "window.h"
+#include "tetris_graphics.h"
 
 class Controller {
     Board* p1;
@@ -13,7 +14,7 @@ class Controller {
 public:
     Controller(Board* p1, Board* p2);
     ~Controller();
-    int play(string text1, string text2, int init, int gameNo);
+    int play(string text1, string text2, int init, int gameNo, bool graphics);
     void displayWinner();
 };
 
