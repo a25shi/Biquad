@@ -17,5 +17,3 @@ level3.o: level3.cc level3.h
 level4.o: level4.cc level4.h
 RAIILevel.o: RAIILevel.cc RAIILevel.h
 controller.o: controller.cc controller.h
-window.o: window.cc window.h
-tetris_graphics.o: tetris_graphics.cc tetris_graphics.h
