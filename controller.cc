@@ -228,25 +228,28 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
     if (gameNo != 1) {
         cin >> cmd;
     }
-
+    shared_ptr<Xwindow> w = nullptr;
+    shared_ptr<TetrisGraphics> tg = nullptr;
     // initialize display
-    Xwindow w;
-    TetrisGraphics tg;
+    if (graphics) {
+        w = make_shared<Xwindow>();
+        tg = make_shared<TetrisGraphics>();
+    }
 
     vector<vector<int>> p1OldCurr = p1->getCurr();
     vector<vector<int>> p2OldCurr = p2->getCurr();
 
     if (graphics) {
-        tg.player1_init(&w);
-        tg.player2_init(&w);
+        tg->player1_init(w.get());
+        tg->player2_init(w.get());
 
         string p1type = p1->getCurrType();
         string p2type = p2->getCurrType();
         vector<vector<int>> p1init = p1->getCurr();
         vector<vector<int>> p2init = p2->getCurr();
 
-        tg.display_block(&w, p1init, 1, p1type);
-        tg.display_block(&w, p2init, 2, p2type);
+        tg->display_block(w.get(), p1init, 1, p1type);
+        tg->display_block(w.get(), p2init, 2, p2type);
     }
 
     while (gameOn) {
@@ -272,10 +275,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (p2 == cur) {
                         curPlayer = 2;
                         p2OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p2OldCurr, curPlayer);
                     } else {
                         p1OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p1OldCurr, curPlayer);
                     }
                 }
 
@@ -305,7 +308,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 if (graphics) {
                     vector<vector<int>> curPos = cur->getCurr();
                     string curType = cur->getCurrType();
-                    tg.display_block(&w, curPos, curPlayer, curType);
+                    tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
 
                 if (special) {
@@ -318,10 +321,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (p2 == cur) {
                         curPlayer = 2;
                         p2OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p2OldCurr, curPlayer);
                     } else {
                         p1OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p1OldCurr, curPlayer);
                     }
                 }
                 for (int i = 0; i < total; i++) {
@@ -350,7 +353,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 if (graphics) {
                     vector<vector<int>> curPos = cur->getCurr();
                     string curType = cur->getCurrType();
-                    tg.display_block(&w, curPos, curPlayer, curType);
+                    tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
 
                 if (special) {
@@ -363,10 +366,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (p2 == cur) {
                         curPlayer = 2;
                         p2OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p2OldCurr, curPlayer);
                     } else {
                         p1OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p1OldCurr, curPlayer);
                     }
                 }
 
@@ -382,7 +385,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 if (graphics) {
                     vector<vector<int>> curPos = cur->getCurr();
                     string curType = cur->getCurrType();
-                    tg.display_block(&w, curPos, curPlayer, curType);
+                    tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
 
             } else if (cmd.substr(0,2) == "dr") {
@@ -391,10 +394,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (p2 == cur) {
                         curPlayer = 2;
                         p2OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p2OldCurr, curPlayer);
                     } else {
                         p1OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p1OldCurr, curPlayer);
                     }
                 }
                 bool special = false;
@@ -413,7 +416,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (graphics) {
                         vector<vector<int>> curPos = cur->getCurr();
                         string curType = cur->getCurrType();
-                        tg.display_block(&w, curPos, curPlayer, curType);
+                        tg->display_block(w.get(), curPos, curPlayer, curType);
                     }
 
                     if (player == true) {
@@ -427,7 +430,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 if (graphics) {
                     vector<vector<int>> curPos = cur->getCurr();
                     string curType = cur->getCurrType();
-                    tg.display_block(&w, curPos, curPlayer, curType);
+                    tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
 
                 if (special) {
@@ -471,10 +474,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (p2 == cur) {
                         curPlayer = 2;
                         p2OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p2OldCurr, curPlayer);
                     } else {
                         p1OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p1OldCurr, curPlayer);
                     }
                 }
 
@@ -486,7 +489,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 if (graphics) {
                     vector<vector<int>> curPos = cur->getCurr();
                     string curType = cur->getCurrType();
-                    tg.display_block(&w, curPos, curPlayer, curType);
+                    tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
 
             } else if (cmd.substr(0,5) == "noran") {
@@ -516,10 +519,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (p2 == cur) {
                         curPlayer = 2;
                         p2OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p2OldCurr, curPlayer);
                     } else {
                         p1OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p1OldCurr, curPlayer);
                     }
                 }
 
@@ -532,7 +535,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 if (graphics) {
                     vector<vector<int>> curPos = cur->getCurr();
                     string curType = cur->getCurrType();
-                    tg.display_block(&w, curPos, curPlayer, curType);
+                    tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
             } else if (cmd.substr(0,2) == "co") {
                 int curPlayer = 1;
@@ -540,10 +543,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (p2 == cur) {
                         curPlayer = 2;
                         p2OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p2OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p2OldCurr, curPlayer);
                     } else {
                         p1OldCurr = cur->getCurr();
-                        tg.erase_block(&w, p1OldCurr, curPlayer);
+                        tg->erase_block(w.get(), p1OldCurr, curPlayer);
                     }
                 }
 
@@ -557,7 +560,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 if (graphics) {
                     vector<vector<int>> curPos = cur->getCurr();
                     string curType = cur->getCurrType();
-                    tg.display_block(&w, curPos, curPlayer, curType);
+                    tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
             } else if (cmd == "quit") {
                 return -1;
@@ -594,8 +597,6 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
         } else {
             player = !player;
         }
-
-        
     }
     return 1;
 }
