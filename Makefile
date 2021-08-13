@@ -1,7 +1,7 @@
 CXX=g++
 CXXFLAGS=-std=c++14 -MMD -lX11 
 OBJECTS= controller.o test.o board.o block.o generation.o level0.o level1.o level2.o level3.o level4.o RAIILevel.o tetris_graphics.o window.o 
-EXEC=test
+EXEC=biquadris
 
 ${EXEC}: ${OBJECTS}
 	${CXX} ${OBJECTS} -g -lX11 -o ${EXEC} 
