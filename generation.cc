@@ -4,6 +4,7 @@ int generation::getLevel() {
 }
 
 void generation::readFile() {
+    blocks.clear();
     char input;
     std::ifstream open(file);
     while (open >> input) {
