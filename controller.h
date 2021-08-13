@@ -2,6 +2,7 @@
 #define _PROJECTFILES_CONTROLLER_H
 #include "board.h"
 #include "RAIILevel.h"
+#include "window.h"
 #include "tetris_graphics.h"
 
 class Controller {
