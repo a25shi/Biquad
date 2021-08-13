@@ -28,7 +28,7 @@ class Board {
     vector<vector<int>> rotationT;
     vector<vector<int>> rotationI;
 
-    vector<vector<unique_ptr<Block>> > grid;
+    vector<vector<shared_ptr<Block>>> grid;
     vector<vector<int>> curr;
 
     vector<int> rowsFull();

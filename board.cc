@@ -2,7 +2,15 @@
 using namespace std;
 
 Board::Board() {
-    vector<vector<unique_ptr<Block>>>grid (rows, vector<unique_ptr<Block>>(cols));
+    for (int y = 0; y < rows; y++) {
+        vector<shared_ptr<Block>> blockRow;
+        grid.emplace_back(blockRow);
+        for (int x = 0; x < cols; x++) {
+            grid[y].emplace_back(make_shared<Block>());
+        }
+    }
+    //vector<vector<unique_ptr<Block>>>grid (rows, vector<unique_ptr<Block>>(cols, make_unique<Block>()));
+   // vector<vector<shared_ptr<Block>>>grid (rows, vector<shared_ptr<Block>> (cols, make_shared<Block>()));
     for (int i = 0; i < 4; i++) {
         vector<int> row = {-1,-1};
         curr.emplace_back(row);
@@ -98,12 +106,10 @@ bool Board::next() {
 }
 
 vector<int> Board::rowsFull() {
-    //2cout << "in rows full" << endl;
     vector<int> fullRows;
     for (int y = 0; y < rows; y++) {
         bool rowFull = true;
         for (int x = 0; x < cols; x++) {
-            //cout << "grid[" << x << "," << y << "]: " << grid[y][x]->getType() << endl; 
             if (grid[y][x]->getType() == ".") {
                 rowFull = false;
                 break;
@@ -114,7 +120,6 @@ vector<int> Board::rowsFull() {
         }
     }
 
-    //2cout << "returning rows full: " << fullRows.size() << endl;
     return fullRows;
 }
 
@@ -130,18 +135,10 @@ void Board::resetCurr(vector<vector<int>> newCoord, string type, int genLevel, i
 }
 
 void Board::removeRow(int rowNum) {
-    //2cout << "emptying row: " << rowNum << endl;
     for (int x = 0; x < cols; x++) {
         vector<vector<int>> allCoord = grid[rowNum][x]->getCoord();
-        //2cout << "got coords" << endl;
-        for (int m = 0; m < allCoord.size(); m++) {
-            //2cout << allCoord[m][0] << "," << allCoord[m][1] << " ";
-        }
-        //2cout << endl;
         if (grid[rowNum][x]->getType() == "*") {
-            //2cout << "star type" << endl;
             grid[rowNum][x]->removeCoord(x, rowNum);
-            //2cout << "removed from block" << endl;
         } else {
             for (int m = 0; m < 4; m++) {
                 if (!(allCoord[m][1] == -1 && allCoord[m][0] == -1)) {
@@ -152,11 +149,9 @@ void Board::removeRow(int rowNum) {
         int coordsLeft = 0;
         if (grid[rowNum][x]->getType() != "*") coordsLeft = grid[rowNum][x]->getActiveCoord();
         if (coordsLeft == 0) {
-            //2cout << "now counting points" << endl;
             int genLevel = grid[rowNum][x]->getLevel();
             int points = (genLevel + 1) * (genLevel + 1);
             score += points;
-            //2cout << "score is now: " << score << " after adding " << points << " points" << endl;
         }
     }
 
@@ -165,29 +160,24 @@ void Board::removeRow(int rowNum) {
             grid[y][i] = std::move(grid[y + 1][i]);
         }
     }
-
+    
     for (int m = 0; m < cols; m++) {
+        //grid[rows - 1][m] = new Block{};
         grid[rows - 1][m] = make_unique<Block>();
     }
 }
 
 bool Board::drop() {
-    //2cout << endl;
-    //2cout << "in drop" << endl;
     for (int x = 0; x < 18; x++) {
         bool success = this->move("d");
     }
-    //2cout << "at most bottom" << endl;
 
     for (int y = 0; y < 4; y++) {
         grid[curr[y][1]][curr[y][0]]->setTemp(false);
     }
-    //2cout << "all are false now" << endl;
 
     vector<int> emptyRow = rowsFull();
-    //2cout << "size: " << emptyRow.size() << endl;
     for (int i = emptyRow.size() - 1; i >= 0; i--) {
-        //2cout << "emptying row no." << i << endl;
         removeRow(emptyRow.at(i));
     }
 
@@ -197,13 +187,10 @@ bool Board::drop() {
     }
 
     if (curLevel == 4) {
-        //cout << endl;
-        //cout << "level 4" << endl;
         if (emptyRow.size() == 0) noDrops++;
         else noDrops = 0;
-        //cout << "nodrops are: " << noDrops << endl;
+
         if (noDrops == 5) {
-            //cout << "thus called dropMiddle()" << endl;
             dropMiddle();
             noDrops = 0;
             
@@ -230,22 +217,18 @@ void Board::dropMiddle() {
     int lowest = 18;
     for (int x = 17; x >= 0; x--) {
         if (grid[x][5]->getType() == ".") {
-            //<< "lowest rn is: " << x << endl;
             lowest = x;
         } else {
             break;
         }
     }
     if (lowest != 18) {
-        //cout << "deleted what was before" << endl;
-
         vector<vector<int>> pos;
         vector<int> row = {5, lowest};
         pos.emplace_back(row);
-        //cout << ""
 
+        //grid[lowest][5] = new Block{curLevel, pos};
         grid[lowest][5] = make_unique<Block>(curLevel, pos);
-        //cout << "type at grid[5," << lowest << "]: " << grid[lowest][5]->getType() << endl;
     }
 }
 
