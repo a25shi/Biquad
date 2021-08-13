@@ -7,7 +7,7 @@
 
 using namespace std;
 
-struct TetrisGraphics {
+class TetrisGraphics {
     int s = 20; // num of pixels per unit
     int board_width = 11;
     int board_height = 18;
