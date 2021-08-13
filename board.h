@@ -1,6 +1,7 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 #include <vector>
+#include <memory>
 #include <iostream>
 #include <string>
 #include "tetris_graphics.h"
@@ -27,7 +28,7 @@ class Board {
     vector<vector<int>> rotationT;
     vector<vector<int>> rotationI;
 
-    vector< vector<Block*> > grid;
+    vector<vector<unique_ptr<Block>> > grid;
     vector<vector<int>> curr;
 
     vector<int> rowsFull();
