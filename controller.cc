@@ -493,9 +493,9 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
 
             } else if (cmd.substr(0,5) == "noran") {
                 if (cur == p1) {
-                    p1level.swapRandom(true, "");
+                    p1level.swapRandom(false, "");
                 } else {
-                    p2level.swapRandom(true, "");
+                    p2level.swapRandom(false, "");
                 }
             } else if (cmd.substr(0,3) == "ran") {
                 string file;
