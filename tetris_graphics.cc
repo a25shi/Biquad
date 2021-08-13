@@ -54,6 +54,14 @@ void TetrisGraphics::player2_init (Xwindow *w) {
   w->drawString(400, 90 + s, "Score: ");
 }
 
+void TetrisGraphics::player1_board_erase (Xwindow *w) {
+  w->fillRectangle(x0, y0 + s, s * board_width, s * board_height, Xwindow::Wheat);
+}
+
+void TetrisGraphics::player2_board_erase (Xwindow *w) {
+  w->fillRectangle(x0 + s * board_width, y0 + s, s * board_width, s * board_height, Xwindow::Tan);
+}
+
 void TetrisGraphics::player_level (Xwindow *w, int player, int level) {
   int x_level = 170 + 50 + (player - 1) * s * board_width;
   string st = to_string(level);
@@ -65,3 +73,4 @@ void TetrisGraphics::player_score (Xwindow *w, int player, int score) {
   string st = to_string(score);
   w->drawString(x_score, 90 + s, st);
 }
+
