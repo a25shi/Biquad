@@ -20,9 +20,12 @@ struct TetrisGraphics {
       void erase_block (Xwindow *w, vector<vector<int>> v, int player);
       void player1_init (Xwindow *w);
       void player2_init (Xwindow *w);
+      void player1_board_erase(Xwindow *w);
+      void player2_board_erase(Xwindow *w);
       void player_level (Xwindow *w, int player, int level);
       void player_score (Xwindow *w, int player, int score);
 
 };
 
 #endif
+
