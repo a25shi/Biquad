@@ -75,48 +75,18 @@ bool Board::next() {
         coord.emplace_back(row);
     }
 
-    if (nextBlock == "L") {
-        coord = {{0, 13}, {1, 13}, {2, 13}, {2, 14}};
-        if (!(checkMove(coord, false))) return false;
-        for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = make_unique<Block>("L", coord, curLevel, 0);
-        }
-    } else if (nextBlock == "J") {
-        coord = {{0, 14}, {0, 13}, {1, 13}, {2, 13}};
-        if (!(checkMove(coord, false))) return false;
-        for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = make_unique<Block>("J", coord, curLevel, 0);
-        }
-    } else if (nextBlock == "O") {
-        coord = {{0, 14}, {0, 13}, {1, 13}, {1, 14}};
-        if (!(checkMove(coord, false))) return false;
-        for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = make_unique<Block>("O", coord, curLevel, 0);
-        }
-    } else if (nextBlock == "Z") {
-        coord = {{0, 14}, {1, 14}, {1, 13}, {2, 13}};
-        if (!(checkMove(coord, false))) return false;
-        for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = make_unique<Block>("Z", coord, curLevel, 0);
-        }
-    } else if (nextBlock == "S") {
-        coord = {{2, 14}, {1, 14}, {1, 13}, {0, 13}};
-        if (!(checkMove(coord, false))) return false;
-        for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = make_unique<Block>("S", coord, curLevel, 0);
-        }
-    } else if (nextBlock == "T") {
-        coord = {{0, 14}, {1, 14}, {2, 14}, {1, 13}};
-        if (!(checkMove(coord, false))) return false;
-        for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = make_unique<Block>("T", coord, curLevel, 0);
-        }
-    } else if (nextBlock == "I") {
-        coord = {{0, 14}, {1, 14}, {2, 14}, {3, 14}};
-        if (!(checkMove(coord, false))) return false;
-        for (int i = 0; i < 4; i++) {
-            grid[coord[i][1]][coord[i][0]] = make_unique<Block>("I", coord, curLevel, 0);
-        }
+    if (nextBlock == "L") coord = {{0, 14}, {1, 14}, {2, 14}, {2, 15}};
+    else if (nextBlock == "J") coord = {{0, 15}, {0, 14}, {1, 14}, {2, 14}};
+    else if (nextBlock == "O") coord = {{0, 15}, {0, 14}, {1, 14}, {1, 15}};
+    else if (nextBlock == "Z") coord = {{0, 15}, {1, 15}, {1, 14}, {2, 14}};
+    else if (nextBlock == "S") coord = {{2, 15}, {1, 15}, {1, 14}, {0, 14}};
+    else if (nextBlock == "T") coord = {{0, 15}, {1, 15}, {2, 15}, {1, 14}};
+    else if (nextBlock == "I") coord = {{0, 14}, {1, 14}, {2, 14}, {3, 14}};
+
+    if (!(checkMove(coord, false))) return false;
+
+    for (int i = 0; i < 4; i++) {
+        grid[coord[i][1]][coord[i][0]] = make_unique<Block>(nextBlock, coord, curLevel, 0);
     }
 
     for (int i = 0; i < 4; i++) {
@@ -150,21 +120,7 @@ vector<int> Board::rowsFull() {
 
 void Board::resetCurr(vector<vector<int>> newCoord, string type, int genLevel, int stage) {
     for (int i = 0; i < 4; i++) {
-        if (type == "L") {
-            grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>("L", newCoord, genLevel, stage);
-        } else if (type == "O") {
-            grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>("O", newCoord, genLevel, stage);
-        } else if (type == "J") {
-            grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>("J", newCoord, genLevel, stage);
-        } else if (type == "T") {
-            grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>("T", newCoord, genLevel, stage);
-        } else if (type == "Z") {
-            grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>("Z", newCoord, genLevel, stage);
-        } else if (type == "S") {
-            grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>("S", newCoord, genLevel, stage);
-        } else {
-            grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>("I", newCoord, genLevel, stage);
-        }
+        grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>(type, newCoord, genLevel, stage);
     }
 
     for (int i = 0; i < 4; i++) {
@@ -209,7 +165,10 @@ void Board::removeRow(int rowNum) {
             grid[y][i] = std::move(grid[y + 1][i]);
         }
     }
-    //2cout << "moved it all down" << endl;
+
+    for (int m = 0; m < cols; m++) {
+        grid[rows - 1][m] = make_unique<Block>();
+    }
 }
 
 bool Board::drop() {
