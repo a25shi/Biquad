@@ -4,8 +4,6 @@
 #include <memory>
 #include <iostream>
 #include <string>
-#include "tetris_graphics.h"
-#include "window.h"
 #include "block.h"
 
 using namespace std;
