@@ -9,8 +9,6 @@ Board::Board() {
             grid[y].emplace_back(make_shared<Block>());
         }
     }
-    //vector<vector<unique_ptr<Block>>>grid (rows, vector<unique_ptr<Block>>(cols, make_unique<Block>()));
-   // vector<vector<shared_ptr<Block>>>grid (rows, vector<shared_ptr<Block>> (cols, make_shared<Block>()));
     for (int i = 0; i < 4; i++) {
         vector<int> row = {-1,-1};
         curr.emplace_back(row);
@@ -39,7 +37,7 @@ bool Board::getBlind() const {
 
 void Board::wipeTemp() {
     for (int x = 0; x < 4; x++) {
-        grid[curr[x][1]][curr[x][0]] = make_unique<Block>();
+        grid[curr[x][1]][curr[x][0]] = make_shared<Block>();
     }
 }
 
@@ -94,7 +92,7 @@ bool Board::next() {
     if (!(checkMove(coord, false))) return false;
 
     for (int i = 0; i < 4; i++) {
-        grid[coord[i][1]][coord[i][0]] = make_unique<Block>(nextBlock, coord, curLevel, 0);
+        grid[coord[i][1]][coord[i][0]] = make_shared<Block>(nextBlock, coord, curLevel, 0);
     }
 
     for (int i = 0; i < 4; i++) {
@@ -125,7 +123,7 @@ vector<int> Board::rowsFull() {
 
 void Board::resetCurr(vector<vector<int>> newCoord, string type, int genLevel, int stage) {
     for (int i = 0; i < 4; i++) {
-        grid[newCoord[i][1]][newCoord[i][0]] = make_unique<Block>(type, newCoord, genLevel, stage);
+        grid[newCoord[i][1]][newCoord[i][0]] = make_shared<Block>(type, newCoord, genLevel, stage);
     }
 
     for (int i = 0; i < 4; i++) {
@@ -163,7 +161,7 @@ void Board::removeRow(int rowNum) {
     
     for (int m = 0; m < cols; m++) {
         //grid[rows - 1][m] = new Block{};
-        grid[rows - 1][m] = make_unique<Block>();
+        grid[rows - 1][m] = make_shared<Block>();
     }
 }
 
@@ -228,7 +226,7 @@ void Board::dropMiddle() {
         pos.emplace_back(row);
 
         //grid[lowest][5] = new Block{curLevel, pos};
-        grid[lowest][5] = make_unique<Block>(curLevel, pos);
+        grid[lowest][5] = make_shared<Block>(curLevel, pos);
     }
 }
 
@@ -293,7 +291,7 @@ bool Board::getHeavy() const {
 
 bool Board::replaceCurr(string type) {
     for (int x = 0; x < 4; x++) {
-        grid[curr[x][1]][curr[x][0]] = make_unique<Block>();
+        grid[curr[x][1]][curr[x][0]] = make_shared<Block>();
     }
 
     string temp = nextBlock;
