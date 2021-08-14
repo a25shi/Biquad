@@ -1,5 +1,6 @@
 #include <iomanip>
 #include "controller.h"
+#include "RAIILevel.h"
 #include <sstream>
 #include <fstream>
 
@@ -152,8 +153,44 @@ void Controller::displayWinner() {
     cout << string(15, '-') << endl;
 }
 
+void Controller::changeCommand() {
+    int newCmd;
+    while (true) {
+        cout << endl;
+        cout << "Enter the number corresponding to the command you would like to rename:" << endl;
+        cout << "1. Left: moves the current block to the left" << endl;
+        cout << "2. Right: moves the current block to the right" << endl;
+        cout << "3. Down: moves the current block the block down by one" << endl;
+        cout << "4. Drop: drops the current block" << endl;
+        cout << "5. Levelup: increases the current level by 1" << endl;
+        cout << "6. Leveldown: decreases the current level by 1" << endl;
+        cout << "7. Norandom: turns off random" << endl;
+        cout << "8. Random: turns on random" << endl;
+        cout << "9. Sequence: accepts input from file" << endl;
+        cout << "10: Restart: resets the game" << endl;
+        cout << "11: Clockwise: rotates the current block clockwise" << endl;
+        cout << "12: Counterclockwise: rotates the current block counterclockwise" << endl;
+
+        cin >> newCmd;
+        if (cin.fail() || newCmd < 1 || newCmd > 12) {
+            cout << "Invalid try again";
+            cin.clear();
+            cin.ignore();
+        } else {
+            string cmd;
+            cout << "What would you like to replace it with?" << endl;
+            cin >> cmd;
+            commands[newCmd - 1] = cmd;
+            cout << boards << endl;
+            cout << "Great! It has been changed to " << cmd << ". Note you must now use the full command to call it!" << endl;
+            break;
+        }
+    }
+}
+
 bool Controller::applySpecial(bool p1On, bool p2On, bool caller) {
     if (p1On && p2On) {
+        cout << endl;
         cout << "Player ";
         if (player) cout << "1";
         cout << " has gained an advantage. Chose an action from the following: " << endl;
@@ -225,6 +262,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
     int p2Count = 0;
 
     if (gameNo != 1) {
+        if (!(sequence)) cout << "Enter command: ";
         cin >> cmd;
     }
     shared_ptr<Xwindow> w = nullptr;
@@ -268,7 +306,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 total = 1;
             }
             parse >> cmd;
-            if (cmd.substr(0,2) == "ri") {
+            if (cmd.substr(0,commands[0].size()) == commands[0]) {
                 int curPlayer = 1;
                 if (graphics) {
                     if (p2 == cur) {
@@ -314,7 +352,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
-            } else if (cmd.substr(0,3) == "lef") {
+            } else if (cmd.substr(0,commands[1].size()) == commands[1]) {
                 int curPlayer = 1;
                 if (graphics) {
                     if (p2 == cur) {
@@ -359,7 +397,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     if (cur == p1) p1On = applySpecial(p1On, p2On, p1On);
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
-            } else if (cmd.substr(0,2) == "do") {
+            } else if (cmd.substr(0,commands[2].size()) == commands[2]) {
                 int curPlayer = 1;
                 if (graphics) {
                     if (p2 == cur) {
@@ -387,7 +425,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
 
-            } else if (cmd.substr(0,2) == "dr") {
+            } else if (cmd.substr(0,commands[3].size()) == commands[3]) {
                 int curPlayer = 1;
                 if (graphics) {
                     if (p2 == cur) {
@@ -437,7 +475,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     else p2On = applySpecial(p1On, p2On, p2On);
                 }
                 player = !player;
-            } else if (cmd.substr(0,6) == "levelu") {
+            } else if (cmd.substr(0,commands[4].size()) == commands[4]) {
                 int level = cur->getLevel();
                 try {
                     for (int i = 0; i < total; i++) {
@@ -451,7 +489,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 }
                 catch (error) {}
                 cout << boards << endl;
-            } else if (cmd.substr(0,6) == "leveld") {
+            } else if (cmd.substr(0,commands[5].size()) == commands[5]) {
                 int level = cur->getLevel();
                 try {
                     for (int i = 0; i < total; i++) {
@@ -491,13 +529,13 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
 
-            } else if (cmd.substr(0,5) == "noran") {
+            } else if (cmd.substr(0,commands[6].size()) == commands[6]) {
                 if (cur == p1) {
-                    p1level.swapRandom(false, "");
+                    p1level.swapRandom(true, "");
                 } else {
-                    p2level.swapRandom(false, "");
+                    p2level.swapRandom(true, "");
                 }
-            } else if (cmd.substr(0,3) == "ran") {
+            } else if (cmd.substr(0,commands[7].size()) == commands[7]) {
                 string file;
                 cin >> file;
                 if (cur == p1) {
@@ -505,14 +543,14 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 } else {
                     p2level.swapRandom(true, file);
                 }
-            } else if (cmd.substr(0,3) == "seq") {
+            } else if (cmd.substr(0,commands[8].size()) == commands[8]) {
                 string file;
                 cin >> file;
                 File = ifstream (file);
                 sequence = true;
-            } else if (cmd.substr(0,3) == "res") {
+            } else if (cmd.substr(0,commands[9].size()) == commands[9]) {
                 return 0;
-            } else if (cmd.substr(0,2) == "cl") {
+            } else if (cmd.substr(0,commands[10].size()) == commands[10]) {
                 int curPlayer = 1;
                 if (graphics) {
                     if (p2 == cur) {
@@ -539,7 +577,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     string curType = cur->getCurrType();
                     tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
-            } else if (cmd.substr(0,2) == "co") {
+            } else if (cmd.substr(0,commands[11].size()) == commands[11]) {
                 int curPlayer = 1;
                 if (graphics) {
                     if (p2 == cur) {
@@ -567,7 +605,10 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     string curType = cur->getCurrType();
                     tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
+            } else if (cmd.substr(0, commands[12].size()) == commands[12]) {
+                changeCommand();
             } else if (cmd == "quit") {
+                displayWinner();
                 return -1;
             } else {
                 if (cmd != "") {
@@ -576,12 +617,12 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
             }
             if (cur == p1 && !p1On) {
                 if (p1Count == 0) {
-                    cout << "Player 1 has filled up their board :(" << endl;
+                    cout << "Player 1 has filled up their board. Player 2 can keep playing or call 'quit' to end the game." << endl;
                     p1Count++;
                 }
             } else if (cur == p2 && !p2On) {
                 if (p2Count == 0) {
-                    cout << "Player 2 has filled up their board :(" << endl;
+                    cout << "Player 2 has filled up their board. Player 1 can keep playing or call 'quit' to end the game." << endl;
                     p2Count++;
                 }
             }
@@ -596,6 +637,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     }
                 }
                 else {
+                    cout << "Enter command: ";
                     cin >> cmd;
                 } 
             }
