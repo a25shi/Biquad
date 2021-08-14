@@ -135,6 +135,7 @@ void Controller::displayWinner() {
     int p2Points = boards[1]->getScore();
 
     cout << string(15, '-') << endl;
+    cout << endl;
     cout << "Final Scores" << endl;
     cout << "Player 1:";
     cout << right;
