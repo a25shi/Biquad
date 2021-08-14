@@ -151,6 +151,21 @@ void Controller::displayWinner() {
         cout << "It's a tie!" << endl;
     }
     cout << string(15, '-') << endl;
+
+
+    cout << "Highscore is: ";
+    if (p1Points > highscore) {
+        cout << p1Points << endl;
+        cout << "Congratulations player1 for setting a high score" << endl;
+    } else if (p2Points > highscore) {
+        if (p1Points > highscore) {
+            cout << p1Points << endl;
+            cout << "Congratulations player1 for setting a high score" << endl;
+        }
+    } else {
+        cout << highscore << endl;
+    }
+    cout << string(15, '-') << endl;
 }
 
 void Controller::changeCommand() {
