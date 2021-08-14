@@ -7,7 +7,7 @@
 
 using namespace std;
 
-struct TetrisGraphics {
+class TetrisGraphics {
     int s = 20; // num of pixels per unit
     int board_width = 11;
     int board_height = 18;
@@ -20,7 +20,12 @@ struct TetrisGraphics {
       void erase_block (Xwindow *w, vector<vector<int>> v, int player);
       void player1_init (Xwindow *w);
       void player2_init (Xwindow *w);
-  
+      void player1_board_erase(Xwindow *w);
+      void player2_board_erase(Xwindow *w);
+      void player_level (Xwindow *w, int player, int level);
+      void player_score (Xwindow *w, int player, int score);
+
 };
 
 #endif
+
