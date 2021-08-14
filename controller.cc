@@ -180,10 +180,14 @@ void Controller::changeCommand() {
             string cmd;
             cout << "What would you like to replace it with?" << endl;
             cin >> cmd;
-            commands[newCmd - 1] = cmd;
-            cout << boards << endl;
-            cout << "Great! It has been changed to " << cmd << ". Note you must now use the full command to call it!" << endl;
-            break;
+            if (cmd == "rename") {
+                cout << "Can't rename it to 'rename', try again." << endl;
+            } else {
+                commands[newCmd - 1] = cmd;
+                cout << boards << endl;
+                cout << "Great! It has been changed to " << cmd << ". Note you must now use the full command to call it!" << endl;
+                break;
+            }
         }
     }
 }
