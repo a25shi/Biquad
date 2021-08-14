@@ -12,21 +12,16 @@ void TetrisGraphics::display_block(Xwindow *w, vector<vector<int>> v, int player
   if (block_type == "T") colour = 10; // turquoise
   int x_origin = x0 + (player - 1) * s * board_width;
   
-  string st = "coordinates ";
   for (int i = 0; i < v.size(); i++) {
       int x = v[i][0];
       int y = v[i][1];
-      st = (st + to_string(x) + " " + to_string(y) + " ");
 
       w->fillRectangle(x_origin + x * s, y0 + (board_height - y) * s, s, s, colour);
     }
-  //w->fillRectangle(0, 0, 300, 60, 0);
-  //w->drawString(10, 40, st);
 }
 
 void TetrisGraphics::erase_block(Xwindow *w, vector<vector<int>> v, int player) {
   int x_origin = x0 + (player - 1) * s * board_width;
-  cout << "erasing...?" << endl;
   for (int i = 0; i < v.size(); i++) {
     int x = v[i][0];
     int y = v[i][1];
