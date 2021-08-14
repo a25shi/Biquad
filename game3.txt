@@ -1,0 +1,22 @@
+rename
+11
+c
+rename
+12
+cc
+norandom game2noran.txt
+sequence game2seq.txt
+I
+drop
+random
+10dr
+I
+4ri
+dro
+L
+10ri
+dro
+10dr
+10dr
+Y
+quit

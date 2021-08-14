@@ -10,7 +10,7 @@ class Controller {
     Board* cur;
     int highscore = 0;
     vector<Board*> boards = {p1, p2};
-    vector<string> commands = {"ri", "lef", "do", "dr", "levelu", "leveld", "noran", "ran", "seq", "res", "cl", "co", "ren"};
+    vector<string> commands = {"ri", "lef", "do", "dr", "levelu", "leveld", "ran", "noran", "seq", "res", "cl", "co", "ren"};
     bool player;
     bool applySpecial(bool p1On, bool p2On, bool caller);
     void displayWinner();

@@ -1,0 +1,13 @@
+5ri
+dro
+2left
+dro
+8ri
+clo
+dro
+10ri
+count
+dro
+10dr
+10dr
+N

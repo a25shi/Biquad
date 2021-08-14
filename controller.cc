@@ -549,13 +549,13 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                     tg->display_block(w.get(), curPos, curPlayer, curType);
                 }
 
-            } else if (cmd.substr(0,commands[7].size()) == commands[7]) {
+            } else if (cmd.substr(0,commands[6].size()) == commands[6]) {
                 if (cur == p1) {
                     p1level.swapRandom(false, "");
                 } else {
                     p2level.swapRandom(false, "");
                 }
-            } else if (cmd.substr(0,commands[6].size()) == commands[6]) {
+            } else if (cmd.substr(0,commands[7].size()) == commands[7]) {
                 string file;
                 cin >> file;
                 if (cur == p1) {
@@ -569,6 +569,7 @@ int Controller::play(string text1, string text2, int init, int gameNo, bool grap
                 File = ifstream (file);
                 sequence = true;
             } else if (cmd.substr(0,commands[9].size()) == commands[9]) {
+                displayWinner();
                 return 0;
             } else if (cmd.substr(0,commands[10].size()) == commands[10]) {
                 int curPlayer = 1;
