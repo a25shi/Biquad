@@ -8,6 +8,7 @@ class Controller {
     Board* p1;
     Board* p2;
     Board* cur;
+    int highscore = 0;
     vector<Board*> boards = {p1, p2};
     vector<string> commands = {"ri", "lef", "do", "dr", "levelu", "leveld", "noran", "ran", "seq", "res", "cl", "co", "ren"};
     bool player;

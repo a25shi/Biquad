@@ -135,6 +135,7 @@ void Controller::displayWinner() {
     int p2Points = boards[1]->getScore();
 
     cout << string(15, '-') << endl;
+    cout << endl;
     cout << "Final Scores" << endl;
     cout << "Player 1:";
     cout << right;
@@ -149,6 +150,21 @@ void Controller::displayWinner() {
         cout << "Player 2 wins!" << endl;
     } else {
         cout << "It's a tie!" << endl;
+    }
+    cout << string(15, '-') << endl;
+
+
+    cout << "Highscore is: ";
+    if (p1Points > highscore) {
+        cout << p1Points << endl;
+        cout << "Congratulations player1 for setting a high score" << endl;
+    } else if (p2Points > highscore) {
+        if (p1Points > highscore) {
+            cout << p1Points << endl;
+            cout << "Congratulations player1 for setting a high score" << endl;
+        }
+    } else {
+        cout << highscore << endl;
     }
     cout << string(15, '-') << endl;
 }
